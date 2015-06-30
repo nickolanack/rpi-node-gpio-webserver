@@ -1,26 +1,30 @@
 /**
  * 
  */
+var fs=require('fs');
+var http=require('http');
 
-function printPage(req){
 
-        return JSON.stringify(Object.keys(req));
+function printHtml(req, res){
+	 	res.writeHead(200, {
+		    'Content-Type': 'text/html'
+		  });
+	 	
+		fs.readFile('./index.html', function (err, data) {
+			res.write(data);
+			res.end();
+		});
+		
 
 }
 
 
 
 
-
-
-
-var http=require('http');
 var server=http.createServer(function(req, res) {
-  res.writeHead(200, {
-    'Content-Type': 'text/html'
-  });
-  res.write(printPage());
-  res.end();
+ 
+	printHtml(req, res));
+  
 });
 
 server.listen(8080);
