@@ -24,6 +24,7 @@
     "url": "https://github.com/nickolanack/rpi-node-gpio-webserver/issues"
   },
   "dependencies":{
-    "rpi-gpio":"latest"
+    "rpi-gpio":"latest",
+    "ws":"latest"
   }
 }
