@@ -23,7 +23,7 @@ function printHtml(req, res){
 
 var server=http.createServer(function(req, res) {
  
-	printHtml(req, res));
+	printHtml(req, res);
   
 });
 
