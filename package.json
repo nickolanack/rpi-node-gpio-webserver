@@ -22,5 +22,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nickolanack/rpi-node-gpio-webserver/issues"
+  },
+  "dependencies":{
+    "rpi-gpio":"latest"
   }
 }
