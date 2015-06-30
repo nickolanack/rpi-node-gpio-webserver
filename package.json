@@ -1,0 +1,26 @@
+{
+  "name": "rpi-node-gpio-webserver",
+  "version": "0.0.0",
+  "description": "a simple webserver for rpi providing controls for monitoring and controling gpio pins",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nickolanack/rpi-node-gpio-webserver.git"
+  },
+  "keywords": [
+    "rpi",
+    "raspberypi",
+    "gpio",
+    "webserver",
+    "automation",
+    "controller"
+  ],
+  "author": "Nick Blackwell",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nickolanack/rpi-node-gpio-webserver/issues"
+  }
+}
