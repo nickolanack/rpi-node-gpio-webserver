@@ -37,8 +37,8 @@
 						}
 					});
 					container.appendChild(new Element('label', {html:device.name}));
-					if(device.direction==='out'){
-						control.disable(); //display only
+					if(device.direction==='in'){
+						control.disable(); //read display only device
 					}
 					
 					//TODO listen for changes via ajax/websocket
