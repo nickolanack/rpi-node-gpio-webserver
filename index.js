@@ -4,31 +4,8 @@
 var fs=require('fs');
 var http=require('http');
 var async=require('async');
-
+var port=80;
 var documentRoot='./html/';
-
-
-var devices=[
-      {
-    	  name:'Pin 7',
-    	  direction:'in',
-      }                   
-]
-
-
-		
-		
-		
-
-
-
-function printFile(file, res){
-	
-	
-}
-
-
-
 
 var server=http.createServer(function(req, res) {
 
@@ -81,4 +58,5 @@ var server=http.createServer(function(req, res) {
 
 });
 
-server.listen(8080);
+server.listen(port);
+console.log('listening on: '+port);
