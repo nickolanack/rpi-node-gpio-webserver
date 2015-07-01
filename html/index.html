@@ -57,12 +57,17 @@
 			
 			Array.each(devices,function(device){
 				var state=device.state;
-				var control=(new UISwitchControl($$('body')[0].appendChild(new Element('div')), {state:state})).addEvent("change",function(newState){
+				var container=$$('body')[0].appendChild(new Element('div'));
+				var control=new UISwitchControl(container, {state:state}).addEvent("change",function(newState){
 					if(state!=newState){
 						//TODO update gpio pin via ajax/websocket
 						state=newState;
 					}
 				});
+				container.appendChild(new Element('label', {html:device.name}));
+				if(device.direction==='out'){
+					control.disable(); //display only
+				}
 				
 				//TODO listen for changes via ajax/websocket
 				
