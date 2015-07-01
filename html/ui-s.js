@@ -74,8 +74,7 @@ var UISwitchControl=new Class({
 		var me=this;
 		var slideImage=me.knob;
 		me.knob.setStyle('opacity','1');
-		var dragMove=slideImage.makeDraggable({
-			handle:slideImage,
+		var dragMove=new Drag(slideImage,{
 			limit:{
 				'x': me.options.slideLimitX, 
 				'y': me.options.slideLimitY //no vertical control
