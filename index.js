@@ -136,7 +136,7 @@ var isOutputPin=function(pin){
 			}
 			
 			
-			if(task=='set_device_state'){
+			if(task=='set_device_value'){
 				var pin=arguments.pin;
 				var value=!!arguments.value;
 				if(clientCanSetPin(wsclient, pin)){
