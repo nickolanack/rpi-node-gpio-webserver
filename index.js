@@ -100,10 +100,11 @@ var setDeviceState=function(pin, value, callback){
 }
 var clientCanSetPin=function(client, pin){
 	return isOutputPin(pin);
-}
+};
+
 var isOutputPin=function(pin){
 	return true;
-}
+};
 
 (function(){
 
