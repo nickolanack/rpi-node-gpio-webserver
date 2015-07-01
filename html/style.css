@@ -6,6 +6,7 @@
     margin: 5px;
     border-radius: 3px;
     box-shadow: 0 0 5px #cccccc inset;
+    display: inline-block;
 }
 
 .ui-ctrl-handle {
@@ -17,4 +18,14 @@
 
 .active .ui-ctrl-handle {
     background-color: chartreuse;
+}
+
+label {
+    margin: 5px;   display: inline-block;   
+    vertical-align: top;
+    font-family: sans-serif;
+    font-weight: 100;
+    color: cornflowerblue;
+    font-size: 10px;
+    line-height: 15px;
 }
