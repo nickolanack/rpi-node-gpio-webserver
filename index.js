@@ -68,7 +68,29 @@ var devices=[{
 		direction:'out',
 		type:'bool',
 		state:false
-}];
+},
+{
+                name:'GPI Pin 11',
+                pin:11,
+                direction:'out',
+                type:'bool',
+                state:false
+},
+{
+                name:'GPI Pin 13',
+                pin:13,
+                direction:'out',
+                type:'bool',
+                state:false
+},
+{
+                name:'GPI Pin 15',
+                pin:15,
+                direction:'out',
+                type:'bool',
+                state:false
+}
+];
 	
 var gpio = require('rpi-gpio');
 devices.forEach(function(dconf){
