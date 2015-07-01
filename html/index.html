@@ -25,6 +25,13 @@
 			};
 			
 			
+			var setDeviceValue(pin, value){
+				websocket.execute('set_device_value', {pin:pin, value:value}, function(response){
+					console.log(response);
+				});
+				
+			}
+			
 			getDevices(function(devices){
 				
 				Array.each(devices,function(device){
@@ -32,7 +39,7 @@
 					var container=$$('body')[0].appendChild(new Element('div'));
 					var control=new UISwitchControl(container, {state:state}).addEvent("change",function(newState){
 						if(state!=newState){
-							//TODO update gpio pin via ajax/websocket
+							setDeviceValue(device.pin, newState);
 							state=newState;
 						}
 					});

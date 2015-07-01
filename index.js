@@ -89,6 +89,21 @@ devices.forEach(function(dconf){
 });
 	
 	
+var setDeviceState(pin, value, callback){
+	
+    gpio.write(pin, value, function(err) {
+        if (err) throw err;
+        callback(value);
+    });
+	
+	
+}
+var clientCanSetPin(client, pin){
+	return isOutputPin(pin);
+}
+var isOutputPin(pin){
+	return true;
+}
 
 (function(){
 
@@ -117,6 +132,18 @@ devices.forEach(function(dconf){
 			
 			if(task=='list_devices'){
 				wsclient.send(id+':'+JSON.stringify(devices));
+			}
+			
+			
+			if(task=='set_device_state'){
+				var pin=arguments.pin;
+				var value=!!arguments.value;
+				if(clientCanSetPin(wsclient, pin)){
+					setDeviceState(pin, value, function(value){
+						wsclient.send(id+':set '+pin+' to '+(value?'true':'false'));
+					});
+				}
+				
 			}
 			
 		
