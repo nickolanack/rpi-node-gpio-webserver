@@ -25,7 +25,7 @@
 			};
 			
 			
-			var setDeviceValue(pin, value){
+			var setDeviceValue=function(pin, value){
 				websocket.execute('set_device_value', {pin:pin, value:value}, function(response){
 					console.log(response);
 				});
