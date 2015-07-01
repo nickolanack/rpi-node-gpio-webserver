@@ -11,15 +11,75 @@
 <script type="text/javascript">
 
 
+	window.addEvent('load',function(){
+		
+		var getDevices=function(callback){
+			
+			
+			//TODO: replace the following with an ajax/websocket call.
+			
+			callback([
+				{
+					name:'GPIO1'
+					pin:1,
+					direction:'out',
+					type:'bool',
+					state:true
+				},
+				{
+					name:'GPIO2',
+					pin:2,
+					direction:'out',
+					type:'bool',
+					state:false
+					
+				},
+				{
+					name:'GPIO3',
+					pin:3,
+					direction:'in',
+					type:'bool',
+					state:true
+				},
+				{
+					name:'GPIO4',
+					pin:4,
+					direction:'in',
+					type:'bool',
+					state:false
+				}
+			]);
+		};
+		
+		
+		getDevices(function(devices){
+			
+			Array.each(devices,function(device){
+				var state=device.state;
+				var control=(new UISwitch($$('body')[0].appendChild(new Element('div')), {state:state})).addEvent("change",function(newState){
+					if(state!=newState){
+						//TODO update gpio pin via ajax/websocket
+						state=newState;
+					}
+				});
+				
+				//TODO listen for changes via ajax/websocket
+				
+			});
+			
+			
+		});
+		
+		
+	});
+
+
+	
 
 
 </script>
 </head>
 <body>
-	<section>
-		
-	
-	
-	</section>
+
 </body>
 </html>
