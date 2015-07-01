@@ -38,6 +38,7 @@ var server=http.createServer(function(req, res) {
 	}
 	if(file.indexOf('.')>=0){
 
+			
 		fs.exists(documentRoot+file, function(exists){
 			
 			if(exists){
@@ -51,15 +52,12 @@ var server=http.createServer(function(req, res) {
 				res.writeHead(200, {
 					'Content-Type': contentTypes[type]
 				});
-		
-				async.map(decodeURI(file).split(' | '), function(part, callback){
-					fs.readFile(documentRoot+file, function (err, data) {
-						res.write(data);
-						callback(null, part);
-					});
-				}, function(files){
+
+				fs.readFile(documentRoot+file, function (err, data) {
+					res.write(data);
 					res.end();
 				});
+
 				
 			
 			
