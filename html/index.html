@@ -16,12 +16,41 @@
 	window.addEvent('load',function(){
 	
 		var websocket=new WebsocketControlQuery('ws://'+window.location.hostname+':8080').addEvent('connect',function(){
-			
-			websocket.execute('list_devices', {}, function(list){
 				
-				console.log(JSON.stringify(list));
-
+			
+			var getDevices=function(callback){
+				websocket.execute('list_devices', {}, callback);
+			};
+			
+			
+			getDevices(function(devices){
+				
+				Array.each(devices,function(device){
+					var state=device.state;
+					var container=$$('body')[0].appendChild(new Element('div'));
+					var control=new UISwitchControl(container, {state:state}).addEvent("change",function(newState){
+						if(state!=newState){
+							//TODO update gpio pin via ajax/websocket
+							state=newState;
+						}
+					});
+					container.appendChild(new Element('label', {html:device.name}));
+					if(device.direction==='out'){
+						control.disable(); //display only
+					}
+					
+					//TODO listen for changes via ajax/websocket
+					
+				});
+				
+				
 			});
+			
+			
+			
+			
+			
+			
 			
 		});
 
@@ -31,67 +60,7 @@
 
 
 	
-		var getDevices=function(callback){
-			
-			
-			//TODO: replace the following with an ajax/websocket call.
-			
-			callback([
-				{
-					name:'GPIO1',
-					pin:1,
-					direction:'out',
-					type:'bool',
-					state:true
-				},
-				{
-					name:'GPIO2',
-					pin:2,
-					direction:'out',
-					type:'bool',
-					state:false
-					
-				},
-				{
-					name:'GPIO3',
-					pin:3,
-					direction:'in',
-					type:'bool',
-					state:true
-				},
-				{
-					name:'GPIO4',
-					pin:4,
-					direction:'in',
-					type:'bool',
-					state:false
-				}
-			]);
-		};
 		
-		
-		getDevices(function(devices){
-			
-			Array.each(devices,function(device){
-				var state=device.state;
-				var container=$$('body')[0].appendChild(new Element('div'));
-				var control=new UISwitchControl(container, {state:state}).addEvent("change",function(newState){
-					if(state!=newState){
-						//TODO update gpio pin via ajax/websocket
-						state=newState;
-					}
-				});
-				container.appendChild(new Element('label', {html:device.name}));
-				if(device.direction==='out'){
-					control.disable(); //display only
-				}
-				
-				//TODO listen for changes via ajax/websocket
-				
-			});
-			
-			
-		});
 		
 		
 	});
