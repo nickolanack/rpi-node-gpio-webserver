@@ -111,7 +111,7 @@ devices.forEach(function(dconf){
 			var request=JSON.parse(data);
 			console.log([data, request]);
 			var id=request.id;
-			var tast=request.task;
+			var task=request.task;
 			var arguments=request.json;
 			
 			
