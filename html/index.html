@@ -8,43 +8,22 @@
 <script type="text/javascript" src="ui-c.js"></script>
 <script type="text/javascript" src="ui-s.js"></script>
 <script type="text/javascript" src="ui-ls.js"></script>
+<script type="text/javascript" src="ws.js"></script>
 <link rel="stylesheet" href="style.css" />
 <script type="text/javascript">
 
 
 	window.addEvent('load',function(){
 	
+		var websocket=new WebsocketControlQuery('ws://'+window.location.hostname+':8080').addEvent('connect',function(){
+			
+			websocket.execute('list_devices', {}, function(list){
+				
+				console.log(JSON.stringify(list));
 
-		var ws = new WebSocket('ws://'+window.location.hostname+':8080');
-		console.log('started websocket: ws');
-		ws.onopen=function(){
-			console.log('opened: ');
+			});
 			
-			var counter=50;
-			var message='Hello World';
-			var interval=setInterval(function(){
-				timer=window.performance.now();
-				ws.send(message);
-				console.log('sent message: '+message);
-				counter--;
-				if(counter==0){
-					clearInterval(interval);
-				}
-			},1000);
-			
-			
-		}
-		
-		ws.onerror=function(){
-			console.log('recieved error: ');
-			
-		}
-		
-		ws.onmessage=function(message){
-			console.log('recieved message: '+message+' '+(window.performance.now()-timer));
-		};
-
-
+		});
 
 
 
