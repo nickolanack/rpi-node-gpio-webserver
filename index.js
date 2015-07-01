@@ -89,7 +89,7 @@ devices.forEach(function(dconf){
 });
 	
 	
-var setDeviceState(pin, value, callback){
+var setDeviceState=function(pin, value, callback){
 	
     gpio.write(pin, value, function(err) {
         if (err) throw err;
@@ -98,10 +98,10 @@ var setDeviceState(pin, value, callback){
 	
 	
 }
-var clientCanSetPin(client, pin){
+var clientCanSetPin=function(client, pin){
 	return isOutputPin(pin);
 }
-var isOutputPin(pin){
+var isOutputPin=function(pin){
 	return true;
 }
 
