@@ -4,11 +4,12 @@
 var fs=require('fs');
 var http=require('http');
 
+var documentRoot='./html/';
 
 
 function printFile(file, res){
 	
-	fs.readFile('./html/'+file, function (err, data) {
+	fs.readFile(documentRoot+file, function (err, data) {
 		res.write(data);
 		res.end();
 	});
@@ -20,11 +21,14 @@ function printFile(file, res){
 var server=http.createServer(function(req, res) {
 
 	var file=req.url.split('/').pop();
+	if(file===''){
+		file='index.html';
+	}
 	if(file.indexOf('.')>=0){
 		
 		
 		
-		fs.exists('./html/'+file, function(exists){
+		fs.exists(documentRoot+file, function(exists){
 			
 			if(exists){
 				var contentTypes={
