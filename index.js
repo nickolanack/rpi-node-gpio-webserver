@@ -3,16 +3,28 @@
  */
 var fs=require('fs');
 var http=require('http');
+var async=require('async');
 
 var documentRoot='./html/';
 
 
+var devices=[
+      {
+    	  name:'Pin 7',
+    	  direction:'in',
+      }                   
+]
+
+
+		
+		
+		
+
+
+
 function printFile(file, res){
 	
-	fs.readFile(documentRoot+file, function (err, data) {
-		res.write(data);
-		res.end();
-	});
+	
 }
 
 
@@ -25,9 +37,7 @@ var server=http.createServer(function(req, res) {
 		file='index.html';
 	}
 	if(file.indexOf('.')>=0){
-		
-		
-		
+
 		fs.exists(documentRoot+file, function(exists){
 			
 			if(exists){
@@ -41,7 +51,17 @@ var server=http.createServer(function(req, res) {
 				res.writeHead(200, {
 					'Content-Type': contentTypes[type]
 				});
-				printFile(file, res);
+				
+				async.map(file.split(' | '), function(part, callback){
+					fs.readFile(documentRoot+file, function (err, data) {
+						res.write(data);
+						callback(null, part);
+					});
+				}, function(files){
+					res.end();
+				});
+				
+			
 			
 			}else{
 				
@@ -49,9 +69,7 @@ var server=http.createServer(function(req, res) {
 				res.end('File not found: '+file);
 				
 			}
-			
-			
-			
+
 		});
 	}else{
 		

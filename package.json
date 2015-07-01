@@ -25,6 +25,7 @@
   },
   "dependencies":{
     "rpi-gpio":"latest",
-    "ws":"latest"
+    "ws":"latest",
+    "async":"latest"
   }
 }
