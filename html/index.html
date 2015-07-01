@@ -56,7 +56,7 @@
 			
 			Array.each(devices,function(device){
 				var state=device.state;
-				var control=(new UISwitch($$('body')[0].appendChild(new Element('div')), {state:state})).addEvent("change",function(newState){
+				var control=(new UISwitchControl($$('body')[0].appendChild(new Element('div')), {state:state})).addEvent("change",function(newState){
 					if(state!=newState){
 						//TODO update gpio pin via ajax/websocket
 						state=newState;
