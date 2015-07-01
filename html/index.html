@@ -19,7 +19,9 @@
 				
 			
 			var getDevices=function(callback){
-				websocket.execute('list_devices', {}, callback);
+				websocket.execute('list_devices', {}, function(response){
+					callback(JSON.parse(response));
+				});
 			};
 			
 			
