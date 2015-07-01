@@ -105,7 +105,11 @@ devices.forEach(function(dconf){
 
 		wsclient.on('message',function(data){
 
+		
+			
+			
 			var request=JSON.parse(data);
+			console.log([data, request]);
 			var id=request.id;
 			var tast=request.task;
 			var arguments=request.json;
