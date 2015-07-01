@@ -16,9 +16,7 @@ var WebsocketControlQuery=new Class({
 
 			try{
 
-				//attempt websocket connection...
-				if(window.GeoliveAjaxWebsocketServer){
-
+		
 					var ws = new WebSocket(url);
 					console.log('started websocket: ws');
 					
@@ -34,8 +32,7 @@ var WebsocketControlQuery=new Class({
 					ws.onmessage=function(message){
 						me._handleMessage(message);
 					};
-				}
-
+				
 			}catch(e){
 				console.log('error connecting to websocket');
 			}
