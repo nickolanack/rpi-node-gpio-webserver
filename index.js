@@ -111,7 +111,9 @@ devices.forEach(function(dconf){
 			var arguments=request.json;
 			
 			
-			
+			if(task=='list_devices'){
+				wsclient.send(id+':'+JSON.stringify(devices));
+			}
 			
 		
 		}).on('close',function(code, message){
