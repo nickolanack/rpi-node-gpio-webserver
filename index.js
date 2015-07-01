@@ -61,6 +61,35 @@
 
 })();
 
+
+var devices=[{
+		name:'GPI Pin 7',
+		pin:7,
+		direction:'out',
+		type:'bool',
+		state:false
+}],
+	
+var gpio = require('rpi-gpio');
+devices.forEach(function(dconf){
+	
+	var direction=dconf.direction==='in'?gpio.DIR_IN:gpio.DIR_OUT;
+	
+	gpio.setup(dconf.pin, direction, function(err){
+		
+		 gpio.read(dconf.pin, function(err, value) {
+		        console.log('The value is ' + value);
+		        dconf.state=value?true:false;
+		 });
+		 
+	});
+	 
+	
+	
+});
+	
+	
+
 (function(){
 
 	// Simple websocket server
@@ -76,7 +105,14 @@
 
 		wsclient.on('message',function(data){
 
-			console.log(data);
+			var request=JSON.parse(data);
+			var id=request.id;
+			var tast=request.task;
+			var arguments=request.json;
+			
+			
+			
+			
 		
 		}).on('close',function(code, message){
 			var i = clients.indexOf(wsclient);
@@ -84,10 +120,6 @@
 			clients.splice(i, 1);
 		});
 
-	}).on('headers', function(headers){
-		
-		console.log('headers: '+headers);
-	
 	}).on('error', function(error){
 		
 		console.log('error: '+error);
