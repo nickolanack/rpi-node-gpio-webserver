@@ -13,7 +13,45 @@
 
 
 	window.addEvent('load',function(){
+	
+
+		var ws = new WebSocket('ws://'+window.location.hostname+':8080');
+		console.log('started websocket: ws');
+		ws.onopen=function(){
+			console.log('opened: ');
+			
+			var counter=50;
+			var message='Hello World';
+			var interval=setInterval(function(){
+				timer=window.performance.now();
+				ws.send(message);
+				console.log('sent message: '+message);
+				counter--;
+				if(counter==0){
+					clearInterval(interval);
+				}
+			},1000);
+			
+			
+		}
 		
+		ws.onerror=function(){
+			console.log('recieved error: ');
+			
+		}
+		
+		ws.onmessage=function(message){
+			console.log('recieved message: '+message+' '+(window.performance.now()-timer));
+		};
+
+
+
+
+
+
+
+
+	
 		var getDevices=function(callback){
 			
 			
