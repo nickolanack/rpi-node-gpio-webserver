@@ -24,11 +24,15 @@ also sent to the server via the websocket, to toggle the voltage level on the ph
 
 #Pin Configuration
 
-basically any gpio pin can be configured as a toggle switch, just update the devices.json file.
+Most gpio pins can be configured as a toggle switches, just update the devices.json file.
 currently only 'out' is supported for direction, and 'bool' for type, state contains the initial state
-of the device currenly only false is supported for initial states
+of the device currenly only false is supported for initial states. 
+
+Take a look at the pinout for your rpi board, the following configuration is for the Raspberry Pi2
+
 
 ```
+//devices.json
 
 [{
 	name:'GPIO Pin 7',
