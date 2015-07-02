@@ -26,11 +26,14 @@ The webserver displays a simple page with toggle switch controls for each gpio p
 The list of pins is queried (basically ajax but over a websocket) and toggle events are
 also sent to the server via the websocket, to toggle the voltage level on the physical gpio pin. 
 
+I'm working on simple push notifications to support multiple users being notified of state changes originating 
+from other users.
+
 #Pin Configuration
 
 Most gpio pins can be configured as a toggle switches, just update the devices.json file.
 currently only 'out' is supported for direction, and 'bool' for type, state contains the initial state
-of the device currenly only false is supported for initial states. 
+of the device currenlty only false is supported for initial states. 
 
 Take a look at the pinout for your rpi board, the following configuration is for the Raspberry Pi2
 
