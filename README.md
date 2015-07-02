@@ -10,7 +10,7 @@ then run
 
 ```
 
-git clone https://
+git clone https://github.com/nickolanack/rpi-node-gpio-webserver.git
 cd rpi-node-gpio-webserver
 npm install
 sudo node index.js
