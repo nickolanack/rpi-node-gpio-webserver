@@ -27,7 +27,7 @@ The list of pins is queried (basically ajax but over a websocket) and toggle eve
 also sent to the server via the websocket, to toggle the voltage level on the physical gpio pin. 
 
 I'm working on simple push notifications to support multiple users being notified of state changes originating 
-from other users.
+from other users, as well as to support input/sensor gpio pins.
 
 #Pin Configuration
 
