@@ -65,3 +65,7 @@ Take a look at the pinout for your rpi board, the following configuration is for
 ]
 
 ```
+
+The previous config would produce a webpage that looks like:
+
+![web page](https://nickolanack/rpi-node-gpio-webserver/master/screen.png})
