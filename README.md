@@ -22,3 +22,5 @@ The webserver displays a simple page with toggle switch controls for each gpio p
 The list of pins is queried (basically ajax but over a websocket) and toggle events are
 also sent to the server via the websocket, to toggle the voltage level on the physical gpio pin. 
 
+#Pin Configuration
+
