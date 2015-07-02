@@ -1,5 +1,9 @@
 # rpi-node-gpio-webserver
-a nodejs webserver for raspberry-pi that provides an interface to control/monitor general purpose io pins.
+A nodejs webserver for raspberry-pi that provides an interface to control/monitor general purpose io pins. currently only output pins have been implemented 
+
+This project does not proved any access control, make sure that your raspberry pi is not visible outside your local area network, to prevent unauthorized access.
+
+I would like to compile some safe/inexpensive optocuppler/triac circuits for manipulating real devices such as home lighting, sprinker system solenoids, etc. contact me if you have any application uses or circuit ideas!
 
 #Installation
 on your raspberry pi, install node, npm and git. (I think git might be preinstalled...)
