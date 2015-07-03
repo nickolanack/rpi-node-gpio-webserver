@@ -137,6 +137,7 @@ var isOutputPin=function(pin){
 			if(task=='list_devices'){
 				wsclient.send(id+':'+JSON.stringify(devices));
 				console.log('sent device list: '+devices.length+' devices');
+
 			}
 			
 			
@@ -147,6 +148,14 @@ var isOutputPin=function(pin){
 					setDeviceState(pin, value, function(value){
 						wsclient.send(id+':set '+pin+' to '+ value);
 						console.log('set device: '+pin+' to '+ value);
+						
+						
+						
+						clients.forEach(function(otherclient){
+							if(otherclient!==wsclient){
+								otherclient.send('notification.statechange:'+JSON.stringify({pin:pin, value:value}));
+							}
+					    });
 					});
 				}
 				
@@ -166,12 +175,10 @@ var isOutputPin=function(pin){
 	});
 	
 	
-	gpio.on('change', function(pin, value) {
-	    console.log('notify device: '+pin+' state change: '+value);
-	    clients.forEach(function(wsclient){
-	    	wsclient.send('notification.statechange:'+JSON.stringify({pin:pin, value:value}));
-	    });
-	});
+	//gpio.on('change', function(pin, value) {
+	//   console.log('notify device: '+pin+' state change: '+value);
+	//    
+	//});
 
 	
 	console.log('websocket listening on: '+port);
