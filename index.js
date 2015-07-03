@@ -112,6 +112,7 @@ var isOutputPin=function(pin){
 	})).on('connection', function(wsclient){
 	
 		clients.push(wsclient);
+		console.log('client connected: '+wsclient);
 
 		wsclient.on('message',function(data){
 
@@ -119,7 +120,7 @@ var isOutputPin=function(pin){
 			
 			
 			var request=JSON.parse(data);
-			console.log([data, request]);
+			//console.log([data, request]);
 			var id=request.id;
 			var task=request.task;
 			var arguments=request.json;
@@ -127,6 +128,7 @@ var isOutputPin=function(pin){
 			
 			if(task=='list_devices'){
 				wsclient.send(id+':'+JSON.stringify(devices));
+				console.log('sent device list: '+devices.length+' devices');
 			}
 			
 			
@@ -136,6 +138,7 @@ var isOutputPin=function(pin){
 				if(clientCanSetPin(wsclient, pin)){
 					setDeviceState(pin, value, function(value){
 						wsclient.send(id+':set '+pin+' to '+(value?'true':'false'));
+						console.log('set device: '+pin+' to '+(value?'true':'false'));
 					});
 				}
 				
