@@ -137,8 +137,8 @@ var isOutputPin=function(pin){
 				var value=!!arguments.value;
 				if(clientCanSetPin(wsclient, pin)){
 					setDeviceState(pin, value, function(value){
-						wsclient.send(id+':set '+pin+' to '+(value?'true':'false'));
-						console.log('set device: '+pin+' to '+(value?'true':'false'));
+						wsclient.send(id+':set '+pin+' to '+ value);
+						console.log('set device: '+pin+' to '+ value);
 					});
 				}
 				
@@ -158,10 +158,12 @@ var isOutputPin=function(pin){
 	});
 	
 	
-	gpio.on('change', function(channel, value) {
-	    console.log('Channel ' + channel + ' value is now ' + value);
+	gpio.on('change', function(pin, value) {
+	    console.log('notify device: '+pin+' state change: '+value);
+	    clients.forEach(function(wsclient.send('statechange:'+JSON.stringify({pin:pin, value:value}))));
 	});
 
+	
 	console.log('websocket listening on: '+port);
 
 })();
