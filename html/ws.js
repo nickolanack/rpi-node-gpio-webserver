@@ -59,7 +59,7 @@ var WebsocketControlQuery=new Class({
 			
 			
 			if(!me._handlers['_'+id]){
-				
+				me.fireEvent(id, data);
 				console.log("unhandled message: "+data)
 				
 			}else{
