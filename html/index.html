@@ -34,6 +34,9 @@
 			
 			getDevices(function(devices){
 				
+				
+				var deviceMap={};
+				
 				Array.each(devices,function(device){
 					var state=device.state;
 					var container=$$('body')[0].appendChild(new Element('div'));
@@ -48,9 +51,23 @@
 						control.disable(); //read display only device
 					}
 					
-					//TODO listen for changes via ajax/websocket
+					device.control=control; 
 					
 				});
+				
+				
+				websocket.addEvent('notification.statechange', function(response){
+					
+					var data=JSON.parse(response);
+					Array.each(devices,function(device){
+						
+						if(device.pin===data.pin){
+							device.control.setValue(data.value);
+						}
+						
+					});
+					
+				})
 				
 				
 			});
