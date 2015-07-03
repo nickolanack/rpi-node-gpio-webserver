@@ -81,6 +81,14 @@ devices.forEach(function(dconf){
 	
 	
 });
+
+gpio.on('change', function(pin, value) {
+    devices.forEach(function(device){
+    	if(device.pin===pin){
+    		device.state=value;
+    	}
+    });
+});
 	
 	
 var setDeviceState=function(pin, value, callback){
