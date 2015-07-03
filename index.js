@@ -65,15 +65,15 @@
 var devices=require('./devices.json');
 	
 var gpio = require('rpi-gpio');
-devices.forEach(function(dconf){
+devices.forEach(function(device){
 	
-	var direction=dconf.direction==='in'?gpio.DIR_IN:gpio.DIR_OUT;
+	var direction=device.direction==='in'?gpio.DIR_IN:gpio.DIR_OUT;
 	
-	gpio.setup(dconf.pin, direction, function(err){
+	gpio.setup(device.pin, direction, function(err){
 		
-		 gpio.read(dconf.pin, function(err, value) {
-		        console.log('The value is ' + value);
-		        dconf.state=value?true:false;
+		 gpio.read(device.pin, function(err, value) {
+		        console.log('device: '+device.pin+' initial state: ' + value);
+		        device.state=value?true:false;
 		 });
 		 
 	});
@@ -82,6 +82,8 @@ devices.forEach(function(dconf){
 	
 });
 
+/* detect changes. another application could set gpio pins simultaneously.
+ * 
 gpio.on('change', function(pin, value) {
     devices.forEach(function(device){
     	if(device.pin===pin){
@@ -89,12 +91,20 @@ gpio.on('change', function(pin, value) {
     	}
     });
 });
+*/
 	
 	
 var setDeviceState=function(pin, value, callback){
 	
     gpio.write(pin, value, function(err) {
         if (err) throw err;
+        
+        
+        devices.forEach(function(device){
+        	if(device.pin===pin){
+        		device.state=value;
+        	}
+        });  
         callback(value);
     });
 	
