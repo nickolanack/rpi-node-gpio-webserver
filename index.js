@@ -156,6 +156,11 @@ var isOutputPin=function(pin){
 		console.log('error: '+error);
 	
 	});
+	
+	
+	gpio.on('change', function(channel, value) {
+	    console.log('Channel ' + channel + ' value is now ' + value);
+	});
 
 	console.log('websocket listening on: '+port);
 

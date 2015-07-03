@@ -1,27 +1,27 @@
 [
 	{
-		"name":"GPIO pin 7",
+		"name":"Sprinkler Zone 1",
 		"pin":7,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"GPIO pin 11",
+		"name":"Sprinkler Zone 2",
 		"pin":11,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"GPIO pin 13",
+		"name":"Sprinkler Zone 3",
 		"pin":13,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"GPIO pin 15",
+		"name":"Sprinkler Zone 4",
 		"pin":15,
 		"direction":"out",
 		"type":"bool",
