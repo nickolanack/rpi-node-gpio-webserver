@@ -168,7 +168,9 @@ var isOutputPin=function(pin){
 	
 	gpio.on('change', function(pin, value) {
 	    console.log('notify device: '+pin+' state change: '+value);
-	    clients.forEach(function(wsclient.send('statechange:'+JSON.stringify({pin:pin, value:value}))));
+	    clients.forEach(function(wsclient){
+	    	wsclient.send('statechange:'+JSON.stringify({pin:pin, value:value}));
+	    });
 	});
 
 	
