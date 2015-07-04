@@ -76,3 +76,7 @@ Take a look at the pinout for your rpi board, the following configuration is for
 The previous config would produce a webpage that looks like:
 
 ![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/screen.png)
+
+#Some Circuit Ideas for interfacing with the GPIO headers
+
+![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/ultra-led-driver.png)
