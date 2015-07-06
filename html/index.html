@@ -32,10 +32,32 @@
 				
 			}
 			
+			
+			websocket.addEvent('notification.statechange', function(response){
+				
+				var data=JSON.parse(response);
+				Array.each(devices,function(device){
+					
+					if(device.pin===data.pin){
+						
+						// control is added to device on initialization below.		
+						device.control.setValue(data.value);	
+						// TODO: the event for this setValue task, should be suppressed, otherwise
+						// a notification will be sent to the server, and strange race conditions 
+						// could occur.
+					}
+					
+				});
+				
+			});
+			
+			
 			getDevices(function(devices){
 				
 				
 				var deviceMap={};
+				
+				
 				
 				Array.each(devices,function(device){
 					var state=device.state;
@@ -56,18 +78,7 @@
 				});
 				
 				
-				websocket.addEvent('notification.statechange', function(response){
-					
-					var data=JSON.parse(response);
-					Array.each(devices,function(device){
-						
-						if(device.pin===data.pin){
-							device.control.setValue(data.value);
-						}
-						
-					});
-					
-				})
+				
 				
 				
 			});
