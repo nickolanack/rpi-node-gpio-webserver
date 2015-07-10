@@ -80,4 +80,5 @@ The previous config would produce a webpage that looks like:
 #Some Circuit Ideas for interfacing with the GPIO headers
 
 ![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/ultra-led-driver.png)
-(switched the 100ohm resister for a 51ohm) for  ~20mA
+
+need to update the current label in the schematic (~3v 20mA)
