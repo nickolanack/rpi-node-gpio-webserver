@@ -25,7 +25,7 @@
 			};
 			
 			
-			var setDeviceValue=function(pin, value){
+			var signalDeviceValue=function(pin, value){
 				websocket.execute('set_device_value', {pin:pin, value:value}, function(response){
 					console.log(response);
 				});
@@ -40,8 +40,10 @@
 					
 					if(device.pin===data.pin){
 						
-						// control is added to device on initialization below.		
+						// control is added to device on initialization below.	
+						device._suppressEventSignal=true;
 						device.control.setValue(data.value);	
+						delete device._suppressEventSignal;
 						// TODO: the event for this setValue task, should be suppressed, otherwise
 						// a notification will be sent to the server, and strange race conditions 
 						// could occur.
@@ -51,20 +53,18 @@
 				
 			});
 			
-			
 			getDevices(function(devices){
-				
-				
+
 				var deviceMap={};
-				
-				
-				
+
 				Array.each(devices,function(device){
 					var state=device.state;
 					var container=$$('body')[0].appendChild(new Element('div'));
 					var control=new UISwitchControl(container, {state:state}).addEvent("change",function(newState){
 						if(state!=newState){
-							setDeviceValue(device.pin, newState);
+							if(!device._suppressEventSignal){
+								signalDeviceValue(device.pin, newState);
+							}
 							state=newState;
 						}
 					});
@@ -76,35 +76,12 @@
 					device.control=control; 
 					
 				});
-				
-				
-				
-				
-				
+
 			});
-			
-			
-			
-			
-			
-			
-			
+
 		});
 
-
-
-
-
-
-	
-		
-		
-		
 	});
-
-
-	
-
 
 </script>
 </head>
