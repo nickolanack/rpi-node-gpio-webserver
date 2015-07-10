@@ -207,14 +207,13 @@ var UISwitchControl=new Class({
 				me.element.removeClass('active');
 			}
 			if(!suppressEvents){
-				me.fireEvent('onChange', me.state);
+				me.fireEvent('change', me.state);
 				if(me.state===true||me.steps==1&&me.state===1){
-					me.fireEvent('onEnable');
-					//window.parent.console.debug(me.element);
-					
+					me.fireEvent('enable');
+					//window.parent.console.debug(me.element);	
 				}
 				if(me.state===false||me.steps==1&&me.state===0){
-					me.fireEvent('onDisable');
+					me.fireEvent('disable');
 				
 				}
 			}

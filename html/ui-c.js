@@ -199,7 +199,7 @@ var UIControl=new Class({
 			
 			if(!me._statesEqualTo(previous, state)&&!suppressEvents){
 				me._updateLabelsWithState(me.state);
-				me.fireEvent('onChange', [me.state]);
+				me.fireEvent('change', [me.state]);
 			}
 			if(!me.isInitializing)me._updateLimits();
 			me._didChangeStateFrom(previous);
@@ -233,7 +233,7 @@ var UIControl=new Class({
 		me.state=state;
 		if(!me._statesEqualTo(previous, me.state)&&!suppressEvents){
 			me._updateLabelsWithState(me.state);
-			me.fireEvent('onChange', [me.state]);
+			me.fireEvent('change', [me.state]);
 		}
 		if(!me.isInitializing)me._updateLimits();
 		me._didChangeStateFrom(previous);
@@ -310,7 +310,7 @@ var UIControl=new Class({
 		if(!me.enabled){
 			me.enabled=true;
 			me._enableUserInteraction();
-			me.fireEvent('onInteractionEnabled');
+			me.fireEvent('interaction.enabled');
 		}
 	},
 	_enableUserInteraction:function(){	
@@ -324,7 +324,7 @@ var UIControl=new Class({
 		if(me.enabled){
 			me.enabled=false;
 			me._disableUserInteraction();
-			me.fireEvent('onInteractionDisabled');
+			me.fireEvent('interaction.disabled');
 		}
 	}
 });
