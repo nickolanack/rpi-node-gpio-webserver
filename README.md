@@ -81,4 +81,4 @@ The previous config would produce a webpage that looks like:
 
 ![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/ultra-led-driver.png)
 
-need to update the current label in the schematic (~3v 20mA)
+![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/relay-driver.png)
