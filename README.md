@@ -79,6 +79,6 @@ The previous config would produce a webpage that looks like:
 
 #Some Circuit Ideas for interfacing with the GPIO headers
 
-![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/led-driver.png)
+<img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/led-driver.png" />
 
-![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/relay-driver.png)
+<img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/relay-driver.png" />
