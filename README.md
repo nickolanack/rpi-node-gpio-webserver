@@ -81,9 +81,17 @@ The previous config would produce a webpage that looks like:
 I used following circuit to test the rpi-gpio functionality. I used a 2N3904 General Purpose Transister becuase it 
 is the cheapest one at digikey.com, there are many alternatives. you might be able drive an LED directly from a GPIO 
 output pin. However, it is recomended to only output ~5mA per output pin so I designed my circuits to require less than that
-(~3.5mA) and to use the 5v pins which I believe are powered directly from USB and have a much higher current rating.
+(~3.5mA) and to use the 5v pin (GPIO pin 2) which I believe are powered directly from USB and have a much higher current rating.
 
+In the following diagrams I label pins GPIO2(5v), GPIO7(io), and GPIO6(gnd) to represent pin numbers 2, 7, and 6. There may be alternate pin configurations and numbering depending on the rpi board although I believe these pins are consistent on all available boards. GPIO Pin 7 is 
+refered to as GPIO-4 in the header pin diagrams. You should be able to use any io pin instead of pin 7 as long as you configure devices.json 
+accordingly
 
 <img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/led-driver.png" height="260px"/>
+
+### Relay Circuit
+
+The following circuit uses a relay to switch high voltage AC/DC loads. The G5T-1A is a low cost mechanical relay rated for 5A, 
+at 250V AC or 30V DC. I intend to use this circuit to switch a small number of light bulbs ~60W @120VAC allows up to 10 bulbs max.
 
 <img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/relay-driver.png" height="300px"/>
