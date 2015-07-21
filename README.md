@@ -77,7 +77,12 @@ The previous config would produce a webpage that looks like:
 
 ![alt tag](https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/screen.png)
 
-#Some Circuit Ideas for interfacing with the GPIO headers
+### Test Circuit
+I used following circuit to test the rpi-gpio functionality. I used a 2N3904 General Purpose Transister becuase it 
+is the cheapest one at digikey.com, there are many alternatives. you might be able drive an LED directly from a GPIO 
+output pin. However, it is recomended to only output ~5mA per output pin so I designed my circuits to require less than that
+(~3.5mA) and to use the 5v pins which I believe are powered directly from USB and have a much higher current rating.
+
 
 <img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/led-driver.png" height="260px"/>
 
