@@ -2,6 +2,9 @@
  * 
  */
 
+var config=require('./server.json');
+var devices=require('./devices.json');
+
 (function(){
 	
 	//Simple webserver
@@ -9,7 +12,7 @@
 	var fs=require('fs');
 	var http=require('http');
 	var async=require('async');
-	var port=80;
+	var port=config.serverPort;
 	var documentRoot='./html/';
 
 	var server=http.createServer(function(req, res) {
@@ -62,7 +65,7 @@
 })();
 
 
-var devices=require('./devices.json');
+
 	
 var gpio = require('rpi-gpio');
 devices.forEach(function(device){
@@ -122,7 +125,7 @@ var isOutputPin=function(pin){
 
 	// Simple websocket server
 	
-	var port = 8080;
+	var port = config.websocketPort;
 	var clients = [];
 
 	(new (require('ws').Server)({
