@@ -81,7 +81,7 @@ var UIGeneralPurposeIOPanel=new Class({
 
 				});
 
-			},1000);
+			},100);
 
 		});
 
