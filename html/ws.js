@@ -42,12 +42,25 @@ var WebsocketControlQuery=new Class({
 		},
 		execute:function(task, json, callback){
 			var me=this;
-			var c=me._counter;
+			var id=me._counter;
 			me._counter++;
 			
-			me._handlers['_'+c]=callback;	
-			me._ws.send(JSON.stringify({id:c, task:task, json:json}));
-			me._timers['_'+c]=window.performance.now();
+			me._handlers['_'+id]=callback;	
+			me._ws.send(JSON.stringify({id:id, task:task, json:json}));
+			me._timerStart(id);
+		},
+		_timerStart:function(c){
+			
+				me._timers['_'+c]=window.performance.now();
+			}
+		},
+		_timerStop:function(c){
+			var time=-1;
+			if(window.performance){
+				time=window.performance.now()-me._timers['_'+c];
+				delete me._timers['_'+c];
+			}
+			return time;
 		},
 		_handleMessage:function(message){
 			var me=this;
@@ -63,10 +76,10 @@ var WebsocketControlQuery=new Class({
 				console.log("unhandled message: "+data)
 				
 			}else{
-				var time=window.performance.now()-me._timers['_'+id];
+				var time=me._timerStop(id);
 				me._handlers['_'+id](data);
 				console.log('ws '+id+':'+time);
-				delete me._timers['_'+id];
+				
 				delete me._handlers['_'+id];
 			}
 		}
