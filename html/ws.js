@@ -49,9 +49,9 @@ var WebsocketControlQuery=new Class({
 			me._ws.send(JSON.stringify({id:id, task:task, json:json}));
 			me._timerStart(id);
 		},
-		_timerStart:function(c){
-			
-				me._timers['_'+c]=window.performance.now();
+		_timerStart:function(id){
+			if(window.performance){
+				me._timers['_'+id]=window.performance.now();
 			}
 		},
 		_timerStop:function(c){
