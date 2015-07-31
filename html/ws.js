@@ -50,6 +50,7 @@ var WebsocketControlQuery=new Class({
 			me._timerStart(id);
 		},
 		_timerStart:function(id){
+			//not supported by safari.
 			if(window.performance){
 				me._timers['_'+id]=window.performance.now();
 			}
@@ -57,6 +58,7 @@ var WebsocketControlQuery=new Class({
 		_timerStop:function(c){
 			var time=-1;
 			if(window.performance){
+				//not supported by safari.
 				time=window.performance.now()-me._timers['_'+c];
 				delete me._timers['_'+c];
 			}
