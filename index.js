@@ -172,7 +172,8 @@ gpio.on('change', function(pin, value) {
 					console.log('set device: '+pin+' to '+ value);
 
 					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value}),function(wsclient){
-						console.log(wsclient===arguments.client);
+						console.log(wsclient);
+						console.log(arguments.client);
 						return wsclient!=arguments.client?true:false;
 					});
 					
