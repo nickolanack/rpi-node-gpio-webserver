@@ -51,13 +51,9 @@ function WebsocketServer(options){
 						id:id
 					}, function(response){
 					
-					if((typeof response)=='object'){
-						client.send(id+':'+JSON.stringify(response));
-					}
-					
-					if((['string', 'number']).indexOf(typeof response)>=0){
-						client.send(id+':'+response);
-					}
+						
+					var text=me._prepareResponse(message);				
+					client.send(id+':'+text);
 					
 				});
 				
@@ -101,18 +97,18 @@ WebsocketServer.prototype.stop=function(){
 
 WebsocketServer.prototype.broadcast=function(name, message, filterClient){
 	var me=this;
-
+	var text=me._prepareResponse(message);
 	me.clients.forEach(function(client){
 		
 		if((typeof filterClient)=='function'){
 			if(filterClient(client)){
 				console.log('broadcast client');
-				client.send(name+':'+message);
+				client.send(name+':'+text);
 			}else{
 				console.log('skip client');
 			}
 		}else{
-			client.send(name+':'+message);	
+			client.send(name+':'+text);	
 		}
 			
 	});

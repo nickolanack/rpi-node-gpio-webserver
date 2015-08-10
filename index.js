@@ -74,82 +74,6 @@ gpio.on('change', function(pin, value) {
 		return true;
 	};
 
-	(function(){
-
-		// Simple websocket server
-
-		var port = config.websocketPort;
-		var clients = [];
-
-		(new (require('ws').Server)({
-			port: port
-		})).on('connection', function(wsclient){
-
-			clients.push(wsclient);
-			console.log('client connected: '+wsclient);
-
-			wsclient.on('message',function(data){
-
-
-
-
-				var request=JSON.parse(data);
-				//console.log([data, request]);
-				var id=request.id;
-				var task=request.task;
-				var arguments=request.json;
-
-
-				if(task=='list_devices'){
-					wsclient.send(id+':'+JSON.stringify(devices));
-					console.log('sent device list: '+devices.length+' devices');
-
-				}
-
-
-				if(task=='set_device_value'){
-					var pin=arguments.pin;
-					var value=!!arguments.value;
-					if(clientCanSetPin(wsclient, pin)){
-						setDeviceState(pin, value, function(value){
-							wsclient.send(id+':set '+pin+' to '+ value);
-							console.log('set device: '+pin+' to '+ value);
-
-
-
-							clients.forEach(function(otherclient){
-								if(otherclient!==wsclient){
-									otherclient.send('notification.statechange:'+JSON.stringify({pin:pin, value:value}));
-								}
-							});
-						});
-					}
-
-				}
-
-
-			}).on('close',function(code, message){
-				var i = clients.indexOf(wsclient);
-				console.log('ws:'+i+' client closed: '+code+' '+message);
-				clients.splice(i, 1);
-			});
-
-		}).on('error', function(error){
-
-			console.log('error: '+error);
-
-		});
-
-
-		//gpio.on('change', function(pin, value) {
-		//   console.log('notify device: '+pin+' state change: '+value);
-		//    
-		//});
-
-
-		console.log('websocket listening on: '+port);
-
-	});
 	
 	(function(){
 
@@ -173,8 +97,6 @@ gpio.on('change', function(pin, value) {
 					console.log('set device: '+pin+' to '+ value);
 
 					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value}),function(client){
-						//console.log(wsclient);
-						console.log(options.client!==client);
 						return options.client!==client;
 					});
 					
