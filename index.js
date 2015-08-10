@@ -7,7 +7,8 @@ if(config.serverPort!==false){
 
 	(function(){
 
-		new require('tinywebjs')({
+		var Server=require('tinywebjs');
+		new Server({
 			port:config.serverPort,
 			documentRoot:__dirname+'/html/'
 		});
