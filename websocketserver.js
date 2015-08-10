@@ -43,7 +43,7 @@ function WebsocketServer(options){
 			arguments.client=wsclient;
 			
 			
-			if((typeof me._handler[task])=='function'){
+			if((typeof me._handlers[task])=='function'){
 				
 				me._handlers[task](arguments, function(response){
 					
