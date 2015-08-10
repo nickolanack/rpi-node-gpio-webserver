@@ -7,10 +7,10 @@ if(config.serverPort!==false){
 
 	(function(){
 
-		require('tinywebjs').Server({
+		new require('tinywebjs').Server({
 			port:config.serverPort,
 			documentRoot:__dirname+'/html/'
-		})
+		});
 
 	})();
 }
