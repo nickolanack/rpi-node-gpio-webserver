@@ -26,6 +26,7 @@
   "dependencies":{
     "rpi-gpio":"latest",
     "ws":"latest",
-    "async":"latest"
+    "async":"latest",
+    "tinywebjs":"git://github.com/nickolanack/tinywebjs.git#master"
   }
 }
