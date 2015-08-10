@@ -166,7 +166,7 @@ gpio.on('change', function(pin, value) {
 			
 			var pin=arguments.pin;
 			var value=!!arguments.value;
-			if(clientCanSetPin(wsclient, pin)){
+			if(clientCanSetPin(arguments.wsclient, pin)){
 				setDeviceState(pin, value, function(value){
 					callback('set '+pin+' to '+ value);
 					console.log('set device: '+pin+' to '+ value);
