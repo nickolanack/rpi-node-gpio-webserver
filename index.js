@@ -175,7 +175,7 @@ gpio.on('change', function(pin, value) {
 					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value}),function(client){
 						//console.log(wsclient);
 						console.log(options.client!==client);
-						return false;
+						return options.client!==client;
 					});
 					
 				});
