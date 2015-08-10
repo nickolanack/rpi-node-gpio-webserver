@@ -77,7 +77,7 @@ gpio.on('change', function(pin, value) {
 	
 	(function(){
 
-		var WebSocketServer=require('./websocketserver.js');
+		var WebSocketServer=require('tinywebsocketjs');
 		var wsserver=new WebSocketServer({
 			port:config.websocketPort
 		});
