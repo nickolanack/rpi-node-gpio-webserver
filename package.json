@@ -27,6 +27,7 @@
     "rpi-gpio":"latest",
     "ws":"latest",
     "async":"latest",
-    "tinywebjs":"git://github.com/nickolanack/tinywebjs.git#master"
+    "tinywebjs":"git://github.com/nickolanack/tinywebjs.git#master",
+    "tinywebsocketjs":"git://github.com/nickolanack/tinywebsocketjs.git#master"
   }
 }
