@@ -45,7 +45,11 @@ function WebsocketServer(options){
 			
 			if((typeof me._handlers[task])=='function'){
 				
-				me._handlers[task](arguments, function(response){
+				me._handlers[task]({
+						args:arguments,
+						client:client,
+						id:id
+					}, function(response){
 					
 					if((typeof response)=='object'){
 						client.send(id+':'+JSON.stringify(response));
@@ -123,6 +127,19 @@ WebsocketServer.prototype.addTask=function(name, callback){
 	return me;
 }
 
+
+WebsocketServer.prototype._prepareResponse=function(response){
+	if((typeof response)=='object'){
+		return JSON.stringify(response);
+	}
+	
+	if((['string', 'number']).indexOf(typeof response)>=0){
+		return  response;
+	}
+	
+	throw new Error('Unknown response type '+(typeof response));
+	
+}
 
 
 module.exports=WebsocketServer;

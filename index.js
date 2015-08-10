@@ -157,23 +157,24 @@ gpio.on('change', function(pin, value) {
 		var wsserver=new WebSocketServer({
 			port:config.websocketPort
 		});
-		wsserver.addTask('list_devices', function(arguments,callback){
+		wsserver.addTask('list_devices', function(options, callback){
 			
 			console.log('sent device list: '+devices.length+' devices');
 			callback(devices);
 		
-		}).addTask('set_device_value', function(arguments, callback){
+		}).addTask('set_device_value', function(options, callback){
+			var arguments=options.args;
 			
 			var pin=arguments.pin;
 			var value=!!arguments.value;
-			if(clientCanSetPin(arguments.client, pin)){
+			if(clientCanSetPin(options.client, pin)){
 				setDeviceState(pin, value, function(value){
 					callback('set '+pin+' to '+ value);
 					console.log('set device: '+pin+' to '+ value);
 
 					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value}),function(wsclient){
 						//console.log(wsclient);
-						console.log(arguments.client);
+						console.log(options.client);
 						return false;
 					});
 					
