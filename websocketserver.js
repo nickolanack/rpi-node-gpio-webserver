@@ -24,12 +24,12 @@ function WebsocketServer(options){
 
 	me.server=(new (require('ws').Server)({
 		port: config.port
-	})).on('connection', function(wsclient){
+	})).on('connection', function(client){
 
-		me.clients.push(wsclient);
-		console.log('client connected: '+wsclient);
+		me.clients.push(client);
+		console.log('client connected: '+client);
 
-		wsclient.on('message',function(data){
+		client.on('message',function(data){
 
 
 
@@ -40,7 +40,7 @@ function WebsocketServer(options){
 			var task=request.task;
 			var arguments=request.json;
 			arguments.request_id=id;
-			arguments.client=wsclient;
+			arguments.client=client;
 			
 			
 			if((typeof me._handlers[task])=='function'){
@@ -48,11 +48,11 @@ function WebsocketServer(options){
 				me._handlers[task](arguments, function(response){
 					
 					if((typeof response)=='object'){
-						wsclient.send(id+':'+JSON.stringify(response));
+						client.send(id+':'+JSON.stringify(response));
 					}
 					
 					if((['string', 'number']).indexOf(typeof response)>=0){
-						wsclient.send(id+':'+response);
+						client.send(id+':'+response);
 					}
 					
 				});
@@ -62,7 +62,7 @@ function WebsocketServer(options){
 
 		
 		}).on('close',function(code, message){
-			var i = me.clients.indexOf(wsclient);
+			var i = me.clients.indexOf(client);
 			console.log('ws:'+i+' client closed: '+code+' '+message);
 			me.clients.splice(i, 1);
 		});
