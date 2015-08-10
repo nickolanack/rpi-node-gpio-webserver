@@ -166,13 +166,13 @@ gpio.on('change', function(pin, value) {
 			
 			var pin=arguments.pin;
 			var value=!!arguments.value;
-			if(clientCanSetPin(arguments.wsclient, pin)){
+			if(clientCanSetPin(arguments.client, pin)){
 				setDeviceState(pin, value, function(value){
 					callback('set '+pin+' to '+ value);
 					console.log('set device: '+pin+' to '+ value);
 
 					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value}),function(wsclient){
-						return wsclient!==arguments.wsclient;
+						return wsclient!==arguments.client;
 					});
 					
 				});
