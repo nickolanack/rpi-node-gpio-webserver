@@ -83,7 +83,7 @@ function WebsocketServer(options){
 	//});
 
 
-	console.log('websocket listening on: '+port);
+	console.log('websocket listening on: '+config.port);
 
 }
 
