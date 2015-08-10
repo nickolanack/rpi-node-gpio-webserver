@@ -98,17 +98,17 @@ WebsocketServer.prototype.stop=function(){
 WebsocketServer.prototype.broadcast=function(name, message, filterClient){
 	var me=this;
 
-	me.clients.forEach(function(wsclient){
+	me.clients.forEach(function(client){
 		
 		if((typeof filterClient)=='function'){
-			if(filterClient(wsclient)){
+			if(filterClient(client)){
 				console.log('broadcast client');
-				wsclient.send(name+':'+message);
+				client.send(name+':'+message);
 			}else{
 				console.log('skip client');
 			}
 		}else{
-			wsclient.send(name+':'+message);	
+			client.send(name+':'+message);	
 		}
 			
 	});
