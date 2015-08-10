@@ -101,8 +101,11 @@ WebsocketServer.prototype.broadcast=function(name, message, filterClient){
 		
 		if((typeof filterClients)=='function'){
 			if(filterClient(wsclient)){
+				console.log('broadcast client');
 				wsclient.send(name+':'+message);
-			}	
+			}else{
+				console.log('skip client');
+			}
 		}else{
 			wsclient.send(name+':'+message);	
 		}
