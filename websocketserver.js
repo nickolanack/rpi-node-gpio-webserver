@@ -97,9 +97,10 @@ WebsocketServer.prototype.stop=function(){
 
 WebsocketServer.prototype.broadcast=function(name, message, filterClient){
 	var me=this;
+
 	me.clients.forEach(function(wsclient){
 		
-		if((typeof filterClients)=='function'){
+		if((typeof filterClient)=='function'){
 			if(filterClient(wsclient)){
 				console.log('broadcast client');
 				wsclient.send(name+':'+message);
