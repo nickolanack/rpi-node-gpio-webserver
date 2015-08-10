@@ -43,9 +43,9 @@ function WebsocketServer(options){
 			arguments.client=wsclient;
 			
 			
-			if((typeof me.handler[task])=='function'){
+			if((typeof me._handler[task])=='function'){
 				
-				me.handler[task](arguments, function(response){
+				me._handlers[task](arguments, function(response){
 					
 					if((typeof response)=='object'){
 						wsclient.send(id+':'+JSON.stringify(response));
