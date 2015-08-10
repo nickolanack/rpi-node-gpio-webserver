@@ -149,7 +149,39 @@ gpio.on('change', function(pin, value) {
 
 		console.log('websocket listening on: '+port);
 
+	});
+	
+	(function(){
+
+		var WebSocketServer=require('./websocketserver.js');
+		var wsserver=new WebSocketServer({
+			port:config.websocketPort
+		});
+		wsserver.addTask('list_devices', function(arguments,callback){
+			
+			console.log('sent device list: '+devices.length+' devices');
+			callback(devices);
+		
+		}).addTask('set_device_value', function(arguments, callback){
+			
+			var pin=arguments.pin;
+			var value=!!arguments.value;
+			if(clientCanSetPin(wsclient, pin)){
+				setDeviceState(pin, value, function(value){
+					callback('set '+pin+' to '+ value);
+					console.log('set device: '+pin+' to '+ value);
+
+					wsserver.broadcast('notification.statechange', JSON.stringify({pin:pin, value:value},function(wsclient){
+						return wsclient!==arguments.wsclient);
+					});
+					
+				});
+			}
+
+		});
+
 	})();
+	
 
 }
 
