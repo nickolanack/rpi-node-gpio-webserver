@@ -6,6 +6,7 @@ var events = require('events');
 
 function WebsocketServer(options){
 
+	var me=this;
 	// Simple websocket server
 	events.EventEmitter.call(me);
 	me.clients = [];
