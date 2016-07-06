@@ -91,7 +91,7 @@ accordingly
 
 ### Relay Circuit
 
-The following circuit uses a relay to switch high voltage AC/DC loads. The G5T-1A is a low cost mechanical relay rated for 5A, 
+The following circuit uses a relay to switch high voltage AC/DC loads. The G5T-1A (This part is now obsolete: alternatives: ALDP105W PCH-105L2MH,000) is a low cost mechanical relay rated for 5A, 
 at 250V AC or 30V DC. I intend to use this circuit to switch a small number of light bulbs ~60W @120VAC allows up to 10 bulbs max.
 
 <img src="https://raw.github.com/nickolanack/rpi-node-gpio-webserver/master/relay-driver.png" height="300px"/>
