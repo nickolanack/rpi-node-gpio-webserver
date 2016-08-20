@@ -1,0 +1,32 @@
+[{
+		"interval":"even days at 9:00am and the last day of the month at 9:00am",
+		"name":"Watering the gardens",
+		"tasks":[
+			{
+				"setPin":7,
+				"to":true,
+				"for":3600000,
+				"thenTo":false
+			},
+			{
+				"setPin":11,
+				"to":true,
+				"for":3600000,
+				"thenTo":false
+			},
+			{
+				"setPin":13,
+				"to":true,
+				"for":3600000,
+				"thenTo":false
+			},
+			{
+				"setPin":15,
+				"to":true,
+				"for":3600000,
+				"thenTo":false
+			}
+			
+		]
+
+	}]

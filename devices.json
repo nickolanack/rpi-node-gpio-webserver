@@ -1,27 +1,27 @@
 [
 	{
-		"name":"Sprinkler Zone 1",
+		"name":"Vegetable garden, and sunflowers",
 		"pin":7,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"Sprinkler Zone 2",
+		"name":"Flower garden, and deck pots",
 		"pin":11,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"Sprinkler Zone 3",
+		"name":"Hedges, and Wisteria",
 		"pin":13,
 		"direction":"out",
 		"type":"bool",
 		"state":false
 	},
 	{
-		"name":"Sprinkler Zone 4",
+		"name":"Back fence garden",
 		"pin":15,
 		"direction":"out",
 		"type":"bool",
