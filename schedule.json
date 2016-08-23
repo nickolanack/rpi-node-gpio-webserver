@@ -1,5 +1,5 @@
 [{
-		"interval":"every day at 9:00am and every day at 3:00pm",
+		"interval":"even days at 10:00pm and the last day of the month at 10:00pm",
 		"name":"Watering the gardens",
 		"tasks":[
 			{
