@@ -57,14 +57,16 @@ var UIGeneralPurposeIOPanel = new Class({
 						if (state != newState) {
 							if (!device._suppressEventSignal) {
 								signalDeviceValue(device.pin, newState);
-							} else {
-								// state was set on a notification from server. 
-								// it is not necessary to re-signal the state back 
-								// to the server and could cause an infinite loop 
-								delete device._suppressEventSignal;
 							}
 
 							state = newState;
+						}
+
+						if (device._suppressEventSignal) {
+							// state was set on a notification from server. 
+							// it is not necessary to re-signal the state back 
+							// to the server and could cause an infinite loop 
+							delete device._suppressEventSignal;
 						}
 					});
 					container.appendChild(new Element('label', {
@@ -75,6 +77,23 @@ var UIGeneralPurposeIOPanel = new Class({
 						control.disable(); //read display only device
 					}
 					device.control = control;
+
+				});
+
+
+
+				websocket.addEvent('disconnect', function() {
+					//disable switches while disconnected
+					Array.each(devices, function(device) {
+						device.control.disable();
+					});
+
+				});
+				websocket.addEvent('reconnect', function() {
+					//enable switches when reconnected
+					Array.each(devices, function(device) {
+						device.control.enable();
+					});
 
 				});
 
@@ -94,21 +113,6 @@ var UIGeneralPurposeIOPanel = new Class({
 							});
 
 						});
-					});
-
-				});
-
-				websocket.addEvent('disconnect', function() {
-					//disable switches while disconnected
-					Array.each(devices, function(device) {
-						device.control.disable();
-					});
-
-				});
-				websocket.addEvent('reconnect', function() {
-					//enable switches when reconnected
-					Array.each(devices, function(device) {
-						device.control.enable();
 					});
 
 				});
