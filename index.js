@@ -145,7 +145,7 @@ gpio.on('change', function(pin, value) {
 				setTimeout(function(){
 					setDeviceStateAndBroadcast(task.setPin, task.thenTo);
 					callback();
-				}, task.for)
+				}, scheduler.interval(task.for))
 			});
 
 		});
