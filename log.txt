@@ -1,0 +1,83 @@
+websocket listening on: 8080
+webserver listening on: 80
+device: 7 initial state: false
+device: 11 initial state: false
+device: 15 initial state: false
+device: 13 initial state: false
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+set device: 7 to true
+set device: 7 to false
+ws:0 client closed: 1000 
+client connected: [object Object]
+sent device list: 4 devices
+ws:0 client closed: 1000 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+set device: 13 to true
+set device: 13 to false
+ws:0 client closed: 1000 
+client connected: [object Object]
+sent device list: 4 devices
+ws:0 client closed: 1000 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+set device: 11 to true
+set device: 11 to false
+set device: 13 to true
+set device: 13 to false
+set device: 15 to true
+set device: 15 to false
+set device: 7 to true
+set device: 7 to false
+ws:0 client closed: 1000 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to false
+broadcast client
+set device: 7 to true
+broadcast client
+set device: 7 to true
+broadcast client
+set device: 7 to false
+broadcast client
+set device: 7 to true
+broadcast client
+set device: 7 to false
+broadcast client
+ws:0 client closed: 1000 
+ws:0 client closed: 1001 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+ws:0 client closed: 1001 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+set device: 7 to true
+set device: 7 to false
+set device: 11 to true
+set device: 11 to false
+set device: 13 to true
+set device: 13 to false
+set device: 7 to true
+set device: 7 to false
+ws:0 client closed: 1001 
+client connected: [object Object]
+sent device list: 4 devices
+set device: 7 to true
+set device: 7 to false
+set device: 7 to true
+set device: 7 to false
+ws:0 client closed: 1001 

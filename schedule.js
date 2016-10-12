@@ -19,12 +19,82 @@ var executeTasks=function(tasks, executer, callback){
 
 	};
 
-var parseNextDate=function(time){
 
-	console.log(time);
+var parseShortIntervals=function(time, date){
+
+	var oneHour=3600000;
+	var oneMin=60000;
+
+	if(time.indexOf("every hour")===0){
+		date.setMinutes(0);
+		date.setSeconds(0);
+		return new Date(date.valueOf()+oneHour);
+	}
+
+	if(time.indexOf("every minute")===0){
+		date.setSeconds(0);
+		return new Date(date.valueOf()+oneMin);
+	}
+
+	if(time.indexOf("every second")===0){
+		return new Date(date.valueOf()+1000);
+	}
+	
+
+
+	var parts=time.split(' ');
+	if(parts[0]=='every'&&parts.length===3){
+
+		var number=parseInt(parts[1]);
+		if((typeof number)=='number'){
+
+			if(parts[2]=='hours'){
+				date.setMinutes(0);
+				date.setSeconds(0);
+				return new Date(date.valueOf()+oneHour*number);
+			}
+
+			if(parts[2]=='minutes'){
+				date.setSeconds(0);
+				return new Date(date.valueOf()+oneMin*number);
+			}
+
+			if(parts[2]=='seconds'){
+				return new Date(date.valueOf()+1000*number);
+			}
+
+
+		}
+
+	}
+
+
+	return false;
+
+}
+
+var parseNextDate=function(time, currentDate){
+
+	console.log('Parsing Date: "'+time+'"');
 	var next=false;
 
-	var date=new Date();
+	var currentDateMillis=(currentDate?currentDate.valueOf():(new Date()).valueOf());
+
+	var date=new Date(currentDateMillis);
+	
+
+	
+	 next=parseShortIntervals(time, date);
+	 if(next){
+	 	console.log(next);
+	 	return next;
+	 }
+
+
+	date.setSeconds(0);
+	
+
+
 
 	var hour=time.split(' at ')[1];
 	var pm=hour.indexOf('pm')>0;
@@ -41,12 +111,12 @@ var parseNextDate=function(time){
 	console.log(hour+':'+mins);
 	date.setHours(hour);
 	date.setMinutes(mins);
-	date.setSeconds(0);
+	
 
 	var oneDay=1000*3600*24;
 
 	if(time.indexOf("even days ")===0){
-		while(date.getDate()%2===1||date.valueOf()<(new Date()).valueOf()){
+		while(date.getDate()%2===1||date.valueOf()<currentDateMillis){
 			date=new Date(date.valueOf()+oneDay);
 		}
 		next=date;
@@ -54,7 +124,7 @@ var parseNextDate=function(time){
 	}
 
 	if(time.indexOf("odd days ")===0){
-		while(date.getDate()%2===0||date.valueOf()<(new Date()).valueOf()){
+		while(date.getDate()%2===0||date.valueOf()<currentDateMillis){
 			date=new Date(date.valueOf()+oneDay);
 		}
 		next=date;
@@ -62,6 +132,10 @@ var parseNextDate=function(time){
 	}
 	if(time.indexOf("every day ")===0){
 		next=date;
+
+		if(next.valueOf()<currentDateMillis){
+			next=new Date(next.valueOf()+oneDay);
+		}
 	}
 
 	if(time.indexOf("the last day of the month")===0){
@@ -77,33 +151,84 @@ var parseNextDate=function(time){
 	}
 
 
-	if(next&&(time.indexOf(' day ')||time.indexOf(' days '))){
-		if(next.valueOf()<(new Date()).valueOf()){
-			next=new Date(next.valueOf()+oneDay);
-		}
-	}
+	
+
+	
 
 	console.log(next);
 	return next;
 };
-var recheckMinDate=function(dates, callback){
+
+var parseMillis=function(time){
+
+	if((typeof time)=='number'){
+		return time;
+	}
+
+	var times=time.split(' and ');
+	if(times.length>1){
+
+		var sum=0;
+		times.forEach(function(time){
+			sum+=parseMillis(time);
+		});
+		return sum;
+
+	}
+
+	var parts=time.split(' ');
+	var sum=parseInt(parts[0]);
+
+	switch(parts[1]){
+		case 'second':
+		case 'seconds':
+			sum*=1000;
+		break;
+
+		case 'minute':
+		case 'minutes':
+			sum*=1000*60;
+		break;
+
+
+		case 'hour':
+		case 'hours':
+			sum*=1000*3600;
+		break;
+
+
+	}
+
+	return sum;
+
+
+}
+
+
+
+var recheckDate=function(date, callback){
 	setTimeout(function(){
-		onMinDate(dates, callback);
+		onDate(date, callback);
 	}, 10000);
 };
 
-var onMinDate=function(dates, callback){
-	dates=dates.filter(function(d){return !!d;}).sort(function(a,b){
+var minDate=function(dates){
+	return dates.filter(function(d){return !!d;}).sort(function(a,b){
 		return a.valueOf()-b.valueOf();
-	});
-	var delta=dates[0].valueOf()-((new Date()).valueOf());
-	console.log('Next Event: '+millisToTime(delta)+' '+dates[0]);
+	}).shift();
+};
+
+var onDate=function(date, callback){
+
+	var delta=date.valueOf()-((new Date()).valueOf());
+	
 	if(delta>20000){
-		recheckMinDate(dates,callback);
+		recheckDate(date,callback);
 		return;
 	}
 
 	setTimeout(function(){
+		console.log('Executing Event: '+date);
 		callback();
 	}, delta);
 };
@@ -130,7 +255,12 @@ var millisToTime=function(time){
 
 module.exports={
 
+	//exposed for testing mostly.
+	nextDateFromString:parseNextDate,
+	interval:parseMillis,
 
+
+	//main method.
 	schedule:function(event, executer){
 
 
@@ -148,12 +278,31 @@ module.exports={
 		if((typeof event.interval)=='string'){
 
 			console.log('Starting text interval schedule: '+event.interval);
+			console.log('Current Date: '+(new Date()));
 
 			var parts=event.interval.split(' and ');
 			//"even days at 2am and the last day of the month at 2am"
+			
+			var executing=false
 			var setNextDateInterval=function(){
-				onMinDate(parts.map(parseNextDate), function(){
-					executeTasks(event.tasks.slice(0), executer, setNextDateInterval);
+				var nextDate=minDate(parts.map(function(timeIntervalString){
+					return parseNextDate(timeIntervalString);
+				}));
+				
+				onDate(nextDate, function(){
+					setTimeout(setNextDateInterval, 100);
+					if(!executing){
+						console.log('Next Event: '+event.name+' - '+nextDate)
+						executing=true;
+						executeTasks(event.tasks.slice(0), executer, function(){
+							console.log('Event Finished');
+							executing=false;
+						});
+					}else{
+
+						
+						console.log('skipped');
+					}
 				});
 			};
 			setNextDateInterval();

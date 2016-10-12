@@ -1,0 +1,4 @@
+websocket listening on: 8080
+webserver listening on: 8081
+device: 7 initial state: false
+device: 5 initial state: false
