@@ -142,7 +142,7 @@ gpio.on('change', function(pin, value) {
 
 			scheduler.schedule(event, function(task, callback) {
 				setDeviceStateAndBroadcast(task.setPin, task.to);
-				setTimeout(function(){
+				setTimeout(function() {
 					setDeviceStateAndBroadcast(task.setPin, task.thenTo);
 					callback();
 				}, task.for)

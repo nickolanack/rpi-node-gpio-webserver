@@ -1,4 +1,4 @@
 {
-	"serverPort":80,
+	"serverPort":81,
 	"websocketPort":8080
 }
