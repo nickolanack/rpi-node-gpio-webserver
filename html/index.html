@@ -19,7 +19,7 @@
 	window.addEvent('load',function(){
 	
 		new UIGeneralPurposeIOPanel($$('body')[0],{
-			//websocket:'ws://'+window.location.hostname+':8080'
+			websocket:'ws://'+window.location.hostname+':{{websocketPort}}'
 		});
 
 	});
