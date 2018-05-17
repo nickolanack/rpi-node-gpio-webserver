@@ -7,10 +7,24 @@ if (config.serverPort !== false) {
 
 	(function() {
 
+		var Twig = require('twig'); // Twig module
+    	var twig = Twig.twig;
+
 		var Server = require('tinywebjs');
 		new Server({
 			port: config.serverPort,
-			documentRoot: __dirname + '/html/'
+			documentRoot: __dirname + '/html/',
+			formatters:{
+				html:function(data){
+					
+					var template = twig({
+					    data: data.toString()
+					});
+
+					var out=template.render(config);
+					return out;
+				}
+			}
 		});
 
 	})();
