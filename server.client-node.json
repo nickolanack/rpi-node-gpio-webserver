@@ -1,0 +1,9 @@
+{
+	"serverPort": 8083,
+	"websocketPort": 8082,
+	"proxy":{
+		"remote":"ws://localhost:8080",
+		"basicauth":"user:pass"
+	}
+
+}

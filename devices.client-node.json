@@ -1,0 +1,9 @@
+[
+	{
+		"name":"Client Selenoid",
+		"pin":7,
+		"direction":"out",
+		"type":"bool",
+		"state":false
+	}
+]
