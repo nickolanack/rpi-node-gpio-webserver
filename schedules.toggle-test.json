@@ -1,0 +1,14 @@
+[{
+	"interval":"every 20 seconds",
+	"name":"Toggle Test",
+	"tasks":[
+		{
+			"setPin":7,
+			"to":true,
+			"for":"10 seconds",
+			"thenTo":false
+		}
+		
+	]
+
+}]

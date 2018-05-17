@@ -1,3 +1,6 @@
 /.project
-/node_modules
 ._*
+devices.json
+server.json
+/node_modules
+schedule.js
