@@ -36,7 +36,7 @@ var UIGeneralPurposeIOPanel = new Class({
 					var data = JSON.parse(response);
 					Array.each(devices, function(device) {
 
-						if (device.pin === data.pin) {
+						if (device.pin+"" === data.pin+"") {
 
 							device._suppressEventSignal = true;
 							device.control.setValue(data.value);
@@ -105,7 +105,7 @@ var UIGeneralPurposeIOPanel = new Class({
 						Array.each(updatedDevices, function(updatedDevice) {
 							var state = updatedDevice.state;
 							Array.each(devices, function(device) {
-								if (device.pin === updatedDevice.pin) {
+								if (device.pin+"" === updatedDevice.pin+"") {
 									device._suppressEventSignal = true;
 									device.control.setValue(state);
 								}
