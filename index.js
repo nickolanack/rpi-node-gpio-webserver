@@ -18,60 +18,80 @@ if (config.serverPort !== false) {
 
 if (config.websocketPort !== false) {
 
-	var devices = require('./devices.json');
+	var devices = [];
 	var gpio;
-	try {
-		gpio = require('rpi-gpio');
-	} catch (e) {
-		console.log('using mock gpio')
-		gpio = require('./test/mock-gpio.js');
+
+	
+
+
+	var devices = require('./devices.json');		
+
+
+	var controls={};
+
+	if(devices){
+
+
+
+		var gpio;
+		try {
+			gpio = require('rpi-gpio');
+		} catch (e) {
+			console.log('using mock gpio')
+			gpio = require('./test/mock-gpio.js');
+
+		}
+
+		devices.forEach(function(device) {
+
+			var direction = device.direction === 'in' ? gpio.DIR_IN : gpio.DIR_OUT;
+
+			gpio.setup(device.pin, direction, function(err) {
+
+
+
+				gpio.read(device.pin, function(err, value) {
+					console.log('device: ' + device.pin + ' initial state: ' + value);
+					device.state = value ? true : false;
+				});
+
+			});
+
+			controls[device.pin]={
+				write:function(value, callback){
+					gpio.write(device.pin, value, function(err){
+
+
+						device.state = value;
+						callback(value);
+						
+					});
+
+				}
+			}
+		});
 
 	}
 
-	devices.forEach(function(device) {
-
-		var direction = device.direction === 'in' ? gpio.DIR_IN : gpio.DIR_OUT;
-
-		gpio.setup(device.pin, direction, function(err) {
-
-			gpio.read(device.pin, function(err, value) {
-				console.log('device: ' + device.pin + ' initial state: ' + value);
-				device.state = value ? true : false;
-			});
-
-		});
 
 
 
-	});
+
 
 	/* detect changes. another application could set gpio pins simultaneously.
 	 * 
-gpio.on('change', function(pin, value) {
-    devices.forEach(function(device){
-    	if(device.pin===pin){
-    		device.state=value;
-    	}
-    });
-});
+	gpio.on('change', function(pin, value) {
+	    devices.forEach(function(device){
+	    	if(device.pin===pin){
+	    		device.state=value;
+	    	}
+	    });
+	});
 	 */
 
 
 	var setDeviceState = function(pin, value, callback) {
-
-		gpio.write(pin, value, function(err) {
-			if (err) throw err;
-
-
-			devices.forEach(function(device) {
-				if (device.pin === pin) {
-					device.state = value;
-				}
-			});
-			callback(value);
-		});
-
-
+		controls[pin].write(value, callback);
 	}
 	var clientCanSetPin = function(client, pin) {
 		return isOutputPin(pin);
@@ -86,10 +106,95 @@ gpio.on('change', function(pin, value) {
 
 
 
+
+
 		var WebSocketServer = require('tinywebsocketjs');
 		var wsserver = new WebSocketServer({
 			port: config.websocketPort
 		});
+
+
+		if (config.proxy) {
+			console.log('Setting up proxy @'+config.proxy.remote);
+			if(config.proxy.remote){
+
+				var localDevices=devices.slice(0);
+
+				var WebSocketServer = require('tinywebsocketjs');
+				new WebSocketServer.Client({
+					url: config.proxy.remote
+				}, function(ws){
+					ws.send('list_devices', {}, function(response) {
+						console.log('GOT Devices: '+response);
+
+						var prefix='proxy-server-';
+
+						JSON.parse(response).forEach(function(device){
+							var pin=device.pin;
+							device.pin=prefix+device.pin;
+							console.log('Add device: '+device.pin);
+
+							devices.push(device);
+							console.log(JSON.stringify(devices));
+							controls[device.pin]={
+								write:function(value, callback){
+									ws.send('set_device_value', {
+										pin: pin,
+										value: value
+									}, function(response) {
+										device.state = value;
+										callback(value);
+									});
+
+								}
+							}
+							wsserver.broadcast('notification.deviceupdate', JSON.stringify(device));
+						});
+
+						ws.on('notification.statechange', function(response){
+							console.log('GOT UPDATE: '+response);
+							var data=JSON.parse(response);
+
+							devices.forEach(function(d){
+								if(d.pin==prefix+data.pin){
+									d.state=data.value;
+								}
+							})
+
+							wsserver.broadcast('notification.statechange', JSON.stringify({
+								pin: prefix+data.pin,
+								value: data.value
+							}));
+						})
+
+
+						ws.send('publish_devices', {
+							"devices":localDevices
+						}, function(response) {
+							var original=setDeviceStateAndBroadcast;
+							var map=JSON.parse(response);
+							setDeviceStateAndBroadcast=function(pin, value){
+
+								original.apply(null, arguments);
+								if(map[pin]){
+
+									ws.send('set_device_value', {
+										pin: map[pin],
+										value: value
+									}, function(response) {
+										console.log('forward');
+									});
+
+								}
+							}
+							
+						});
+
+					});
+				});
+			}
+		} 
+
 
 		var setDeviceStateAndBroadcast = function(pin, value) {
 
@@ -102,9 +207,7 @@ gpio.on('change', function(pin, value) {
 				}));
 
 			});
-
-
-		}
+		};
 
 		wsserver.addTask('list_devices', function(options, callback) {
 
@@ -130,6 +233,29 @@ gpio.on('change', function(pin, value) {
 
 				});
 			}
+
+		}).addTask('publish_devices', function(options, callback){
+
+
+			
+			console.log(options.cid);
+			console.log(options.args.devices);
+			var prefix='proxy-client-'+options.cid+'-';
+			var map={};
+			options.args.devices.forEach(function(device){
+				var pin=device.pin;
+
+				device.pin=prefix+pin;
+				map[pin]=device.pin;
+				devices.push(device);
+				controls[device.pin]={
+					write:function(value, callback){
+						console.log('set client');
+					}
+				}
+				wsserver.broadcast('notification.deviceupdate', JSON.stringify(device));
+			})
+			callback(map);
 
 		});
 

@@ -1,14 +1,7 @@
 [
 	{
-		"name":"Vegetable garden, and sunflowers",
+		"name":"Server Selenoid",
 		"pin":7,
-		"direction":"out",
-		"type":"bool",
-		"state":false
-	},
-	{
-		"name":"Flower garden, and deck pots",
-		"pin":5,
 		"direction":"out",
 		"type":"bool",
 		"state":false
