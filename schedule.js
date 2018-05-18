@@ -286,7 +286,7 @@ module.exports={
 			var executing=false
 			var setNextDateInterval=function(){
 				var nextDate=minDate(parts.map(function(timeIntervalString){
-					return parseNextDate(timeIntervalString, (new Date()).valueOf() + 3600000*(event.timezone||0);
+					return parseNextDate(timeIntervalString, (new Date()).valueOf() + 3600000*(event.timezone||0));
 				}));
 				
 				onDate(nextDate, function(){
