@@ -278,7 +278,8 @@ module.exports={
 		if((typeof event.interval)=='string'){
 
 			console.log('Starting text interval schedule: '+event.interval);
-			console.log('Current Date: '+(new Date()));
+			var date=new Date((new Date()).valueOf() + 3600000*(event.timezone||0));
+			console.log('Current Date: '+ date);
 
 			var parts=event.interval.split(' and ');
 			//"even days at 2am and the last day of the month at 2am"
@@ -286,9 +287,13 @@ module.exports={
 			var executing=false
 			var setNextDateInterval=function(){
 				var nextDate=minDate(parts.map(function(timeIntervalString){
-					return parseNextDate(timeIntervalString, (new Date()).valueOf() + 3600000*(event.timezone||0));
+					return parseNextDate(timeIntervalString, date);
 				}));
-				
+
+
+
+				var delta=nextDate.valueOf()-((new Date()).valueOf());
+				console.log('First event starts in '+delta+'ms');
 				onDate(nextDate, function(){
 					setTimeout(setNextDateInterval, 100);
 					if(!executing){
