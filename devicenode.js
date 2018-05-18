@@ -135,6 +135,10 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 		console.log(options.args.devices);
 		var prefix='proxy-client-'+options.cid+'-';
 		var map={};
+
+		var clientDevices=[];
+		var clientDevicesHandlers=[];
+
 		options.args.devices.forEach(function(device){
 			var pin=device.pin;
 
@@ -142,7 +146,8 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 			device.cid=options.cid;
 			map[pin]=device.pin;
 			me._devices.push(device);
-			me._deviceHandlers[device.pin]={
+			clientDevices.push(device);
+			var handler={
 				write:function(value, callback){
 					console.log('Client Proxy: Set device: '+device.pin+' to '+value);
 
@@ -151,8 +156,19 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 					callback(value);
 				}
 			}
+			clientDevicesHandlers.push(device.pin);
+			me._deviceHandlers[device.pin]=handler
 			me._wsServer.broadcast('notification.deviceupdate', JSON.stringify(device));
 		})
+
+		options.client.on('close', function(){
+			console.log('Client Device Closed. Remove pushed devices');
+			clientDevices.forEach(function(d){
+				me._devices.splice(me._devices.indexOf(d),1);
+				delete me._deviceHandlers[d.pin];
+			});
+		});
+
 		callback(map);
 
 	});
@@ -170,14 +186,32 @@ DeviceNode.prototype.startWebSocketProxyClient=function(proxy){
 	console.log('Setting up proxy @'+proxy.remote);
 
 	var localDevices=me._devices.slice(0);
-
+	
 	var WebSocketServer = require('tinywebsocketjs');
 	me._wsProxy=new WebSocketServer.Client({
 		url: proxy.remote
 	});
 	var prefix='proxy-server-';
+
+	me._wsProxy.on('close', function(){
+
+		console.log('Server Device Closed. Remove pulled devices');
+
+		me._devices = localDevices.slice();
+		localHandlers = {};
+		
+		me._devices.forEach(function(d){
+			localHandlers[d.pin]=me._deviceHandlers[d.pin];
+		});
+		me._deviceHandlers=localHandlers;
+
+	})
+
+
 	me._wsProxy.on('open', function(){
 
+
+		
 		
 		try{
 			me._wsProxy.send('list_devices', {}, function(response) {
