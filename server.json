@@ -1,8 +1,0 @@
-{
-	"serverPort": 8081,
-	"websocketPort": 8080,
-	"proxy":{
-		"--remote":"ws://devices.mydomain.org",
-		"basicauth":"user:pass"
-	}
-}
