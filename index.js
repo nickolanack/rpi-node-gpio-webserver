@@ -54,19 +54,20 @@ if (config.websocketPort !== false) {
 
 
 	var schedules = require("./schedule.json");
-	var scheduler = require("./schedule.js");
+	var Scheduler = require("./schedule.js");
 	setTimeout(function(){
 		//delay schedule to prevent running right away 
 		//and alows devices to init
 		schedules.forEach(function(event) {
 
-			scheduler.schedule(event, function(task, callback) {
-				node.setDeviceStateAndBroadcast(task.setPin, task.to);
-				setTimeout(function() {
+			(new Scheduler(event)).run(
+				function(task, interval, callback) {
+					node.setDeviceStateAndBroadcast(task.setPin, task.to);
+				}, 
+				function(task) {
 					node.setDeviceStateAndBroadcast(task.setPin, task.thenTo);
-					callback();
-				}, scheduler.interval(task.for))
-			});
+				}
+			);
 
 		});
 

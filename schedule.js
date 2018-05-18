@@ -1,18 +1,30 @@
+var events = require('events');
 
-var executeTasks=function(tasks, executer, callback){
+
+
+var executeSequentialTasks=function(tasks, initiator, resolver, callback){
 
 
 		var executeTask=function(task){
-
+			var interval=parseMillis(task.for)
 			console.log(JSON.stringify(task));
-			executer(task, function(){
+			var next=function(){
+				next=function(){};
+
+				if(resolver){
+					resolver(task);
+				}
+
 				if(tasks.length){
 					executeTask(tasks.shift());
 				}else if(callback){
 					callback();
 				}
-			});
-			
+
+
+			}
+			initiator(task, interval, next);
+			var cancelFn=onDate(new Date((new Date()).valueOf()+interval), next, 'current event: ');
 		};
 
 		executeTask(tasks.shift());
@@ -73,12 +85,12 @@ var parseShortIntervals=function(time, date){
 
 }
 
-var parseNextDate=function(time, currentDate){
+var parseNextDate=function(time, fromDate){
 
 	console.log('Parsing Date: "'+time+'"');
 	var next=false;
 
-	var currentDateMillis=(currentDate?currentDate.valueOf():(new Date()).valueOf());
+	var currentDateMillis=(fromDate?fromDate:(new Date()).valueOf());
 
 	var date=new Date(currentDateMillis);
 	
@@ -90,8 +102,9 @@ var parseNextDate=function(time, currentDate){
 	 	return next;
 	 }
 
+	
+	date.setSeconds(1, 0);
 
-	date.setSeconds(0);
 	
 
 
@@ -103,7 +116,7 @@ var parseNextDate=function(time, currentDate){
 
 	hour=hour.split(':');
 	var mins=hour.length>1?hour[1]:0;
-	hour=parseInt(hour[0])+(pm?12:0);
+	hour=parseInt(hour[0]%12)+(pm?12:0);
 	//mins=parseInt(mins);
 
 	
@@ -153,7 +166,9 @@ var parseNextDate=function(time, currentDate){
 
 	
 
-	
+	if(next.valueOf()<currentDateMillis){
+		throw 'next date less that current date!';
+	}
 
 	console.log(next);
 	return next;
@@ -206,10 +221,17 @@ var parseMillis=function(time){
 
 
 
-var recheckDate=function(date, callback){
+var recheckDate=function(date, callback, label){
+	var delta=date.valueOf()-((new Date()).valueOf());
+	var interval=30000;
+
+	if(delta>3600000){
+		interval=300000;
+	}
+	console.log(label+(delta)+'ms');
 	setTimeout(function(){
-		onDate(date, callback);
-	}, 10000);
+		onDate(date, callback, label);
+	}, interval);
 };
 
 var minDate=function(dates){
@@ -217,16 +239,20 @@ var minDate=function(dates){
 		return a.valueOf()-b.valueOf();
 	}).shift();
 };
+var onDate=function(date, callback, label){
 
-var onDate=function(date, callback){
+
+	if(!label){
+		label='next event: '
+	}
 
 	var delta=date.valueOf()-((new Date()).valueOf());
 	
-	if(delta>20000){
-		recheckDate(date,callback);
+	if(delta>60000){
+		recheckDate(date,callback, label);
 		return;
 	}
-
+	console.log(label+(delta)+'ms');
 	setTimeout(function(){
 		console.log('Executing Event: '+date);
 		callback();
@@ -253,26 +279,32 @@ var millisToTime=function(time){
 };
 
 
-module.exports={
+function Scheduler(event){
+	var me=this;
+	me._event=event;
 
-	//exposed for testing mostly.
-	nextDateFromString:parseNextDate,
-	interval:parseMillis,
+	if(event.timezone){
+		process.env.TZ = event.timezone;
+	}
+
+}
+Scheduler.prototype.__proto__ = events.EventEmitter.prototype;
 
 
-	//main method.
-	schedule:function(event, executer){
 
-		if(event.timezone){
-			process.env.TZ = event.timezone;
-		}
+Scheduler.prototype.run = function(initiator, resolver) {
+
+		var me=this;
+		var event=me._event;
+
+		
 
 		if((typeof event.interval)=='number'){
 
 			console.log('Starting numeric interval schedule: '+event.interval);
 
 			setInterval(function(){
-				executeTasks(event.tasks.slice(0), executer);
+				executeSequentialTasks(event.tasks.slice(0), initiator, resolver);
 			}, event.interval);
 		}
 
@@ -288,27 +320,34 @@ module.exports={
 			
 			var executing=false
 			var setNextDateInterval=function(){
+
+
+				var now=new Date();
+
 				var nextDate=minDate(parts.map(function(timeIntervalString){
 					return parseNextDate(timeIntervalString);
 				}));
 
 
 
-				var delta=nextDate.valueOf()-((new Date()).valueOf());
-				console.log('First event starts in '+delta+'ms');
+				var delta=nextDate.valueOf()-now.valueOf();
+				if(delta<0){
+					throw 'next value less than now '+delta;
+				}
+				console.log('Event starts '+require('moment')(nextDate).fromNow()+' : '+delta);
 				onDate(nextDate, function(){
 					setTimeout(setNextDateInterval, 100);
 					if(!executing){
 						console.log('Next Event: '+event.name+' - '+nextDate)
 						executing=true;
-						executeTasks(event.tasks.slice(0), executer, function(){
+						executeSequentialTasks(event.tasks.slice(0), initiator, resolver, function(){
 							console.log('Event Finished');
 							executing=false;
 						});
 					}else{
 
 						
-						console.log('skipped');
+						console.log('Skipped next task becuase still running!');
 					}
 				});
 			};
@@ -318,9 +357,7 @@ module.exports={
 
 
 
-	}
+	};
+Scheduler.interval=parseMillis;
 
-
-
-
-}
+module.exports=Scheduler;

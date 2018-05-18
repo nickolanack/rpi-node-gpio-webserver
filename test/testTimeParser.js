@@ -1,24 +1,30 @@
-var schedule = require('../schedule.js');
+var Scheduler = require('../schedule.js');
 
 var assert = require('assert');
 
-assert.equal(1000 * 60 * 60 * 2 + 35 * 1000, schedule.interval('2 hours and 35 seconds'));
+assert.equal(1000 * 60 * 60 * 2 + 35 * 1000, Scheduler.interval('2 hours and 35 seconds'));
+
 
 
 var scheduleEvent=function(){
 
-	schedule.schedule({
-		"interval": "every 5 seconds",
+	(new Scheduler({
+
+		"interval": "every day at 12:53am",
 		"name": "Test",
-		"tasks":[1]
-	}, function(task, callback) {
+		"tasks":[
+			{
+				"do":"something",
+				"for":"1 minute"
+			}
+		]
+	
+	})).run(function(task, interval, callback) {
 		
+		console.log('wait for: '+require('moment').duration(interval).humanize());
 
-		setTimeout(function(){
-
-			callback();
-
-		}, schedule.interval('1 second'));
+	}, function(task){
+		console.log('complete');
 	});
 
 

@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "async": "latest",
+    "moment": "^2.22.1",
     "rpi-gpio": "latest",
     "tinywebjs": "git://github.com/nickolanack/tinywebjs.git#master",
     "tinywebsocketjs": "git://github.com/nickolanack/tinywebsocketjs.git#master",
