@@ -263,7 +263,9 @@ module.exports={
 	//main method.
 	schedule:function(event, executer){
 
-
+		if(event.timezone){
+			process.env.TZ = event.timezone;
+		}
 
 		if((typeof event.interval)=='number'){
 
@@ -278,7 +280,7 @@ module.exports={
 		if((typeof event.interval)=='string'){
 
 			console.log('Starting text interval schedule: '+event.interval);
-			var date=new Date((new Date()).valueOf() + 3600000*(event.timezone||0));
+			var date=new Date();
 			console.log('Current Date: '+ date);
 
 			var parts=event.interval.split(' and ');
@@ -287,7 +289,7 @@ module.exports={
 			var executing=false
 			var setNextDateInterval=function(){
 				var nextDate=minDate(parts.map(function(timeIntervalString){
-					return parseNextDate(timeIntervalString, date);
+					return parseNextDate(timeIntervalString);
 				}));
 
 
