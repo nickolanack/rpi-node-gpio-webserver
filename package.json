@@ -23,12 +23,13 @@
   "bugs": {
     "url": "https://github.com/nickolanack/rpi-node-gpio-webserver/issues"
   },
-  "dependencies":{
-    "rpi-gpio":"latest",
-    "ws":"latest",
-    "async":"latest",
-    "tinywebjs":"git://github.com/nickolanack/tinywebjs.git#master",
-    "tinywebsocketjs":"git://github.com/nickolanack/tinywebsocketjs.git#master",
-    "twig": "^1.11.0"
+  "dependencies": {
+    "async": "latest",
+    "rpi-gpio": "latest",
+    "tinywebjs": "git://github.com/nickolanack/tinywebjs.git#master",
+    "tinywebsocketjs": "git://github.com/nickolanack/tinywebsocketjs.git#master",
+    "trim": "0.0.1",
+    "twig": "^1.11.0",
+    "ws": "latest"
   }
 }
