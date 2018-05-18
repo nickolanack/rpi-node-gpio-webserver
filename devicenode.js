@@ -172,49 +172,62 @@ DeviceNode.prototype.startWebSocketProxyClient=function(proxy){
 	var localDevices=me._devices.slice(0);
 
 	var WebSocketServer = require('tinywebsocketjs');
-	var ws=new WebSocketServer.Client({
+	me._wsProxy=new WebSocketServer.Client({
 		url: proxy.remote
 	});
-	me._wsProxy=ws;
 	var prefix='proxy-server-';
-	ws.on('open', function(){
+	me._wsProxy.on('open', function(){
 
 		
+		try{
+			me._wsProxy.send('list_devices', {}, function(response) {
+				console.log('Received client device list');
 
-		ws.send('list_devices', {}, function(response) {
-			console.log('Received client device list');
+				
 
-			
+				JSON.parse(response).forEach(function(device){
+					var pin=device.pin;
+					device.pin=prefix+device.pin;
+					console.log('Add device('+pin+') as: '+device.pin);
+					me._devices.push(device);
+					//console.log(JSON.stringify(me._devices));
+					me._deviceHandlers[device.pin]={
+						write:function(value, callback){
+							try{
+								me._wsProxy.send('set_device_value', {
+									pin: pin,
+									value: value
+								}, function(response) {
+									device.state = value;
+									callback(value);
+								});
+							}catch(e){
+								console.log('Error Setting Upstream Device');
+								console.error(e);
+							}
 
-			JSON.parse(response).forEach(function(device){
-				var pin=device.pin;
-				device.pin=prefix+device.pin;
-				console.log('Add device('+pin+') as: '+device.pin);
-				me._devices.push(device);
-				//console.log(JSON.stringify(me._devices));
-				me._deviceHandlers[device.pin]={
-					write:function(value, callback){
-
-						me._wsProxy.send('set_device_value', {
-							pin: pin,
-							value: value
-						}, function(response) {
-							device.state = value;
-							callback(value);
-						});
-
+						}
 					}
+					me._wsServer.broadcast('notification.deviceupdate', JSON.stringify(device));
+				});
+
+				try{
+					me._wsProxy.send('publish_client_devices', {
+						"devices":localDevices
+					}, function(response) {
+						me._proxyMap=JSON.parse(response);				
+					});
+				}catch(e){
+					console.log('Error Pushing Devices');
+					console.error(e);
 				}
-				me._wsServer.broadcast('notification.deviceupdate', JSON.stringify(device));
-			});
+				
 
-			ws.send('publish_client_devices', {
-				"devices":localDevices
-			}, function(response) {
-				me._proxyMap=JSON.parse(response);				
 			});
-
-		});
+		}catch(e){
+			console.log('Error Pulling Devices');
+			console.error(e);
+		}
 	});
 
 	me._wsProxy.on('notification.statechange', function(response){
@@ -292,12 +305,17 @@ DeviceNode.prototype.setDeviceStateAndBroadcast = function(pin, value, callback,
 	if(me._wsProxy&&me._proxyMap[pin]){
 
 		console.log('Forward Client: Set device: '+me._proxyMap[pin]+' to '+value);
-		me._wsProxy.send('set_device_value', {
-			pin: me._proxyMap[pin],
-			value: value
-		}, function(response) {
-			console.log('forwarded on');
-		});
+		try{
+			me._wsProxy.send('set_device_value', {
+				pin: me._proxyMap[pin],
+				value: value
+			}, function(response) {
+				console.log('forwarded on');
+			});
+		}catch(e){
+			console.log('Error Forwarding to proxy');
+			console.error(e);
+		}
 
 	}
 
