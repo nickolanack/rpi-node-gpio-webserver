@@ -152,7 +152,7 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 			me.setDeviceStateAndBroadcast(id, value, function(value){
 				callback('Set device: ' + id + ' to ' + value);
 			}, function(client) {
-				filter client
+				//filter client
 				return options.client !== client;
 			});
 
