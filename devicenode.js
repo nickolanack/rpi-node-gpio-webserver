@@ -180,12 +180,16 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 
 
 			var pin=device.pin;
+			if(typeof device.id=="undefined"){
+				throw 'Requires device id '+JSON.stringify(device);
+			}
+
 
 			device.id=prefix+index;
 
 			device.pin=prefix+pin;
 			device.cid=options.cid;
-			map[id]=device.id;
+			map[index]=device.id;
 			me._devices.push(device);
 			clientDevices.push(device);
 			var handler={
@@ -342,6 +346,7 @@ DeviceNode.prototype.setDeviceState = function(id, value, callback) {
 	var me=this;
 
 	if(!me._deviceHandlers[id]){
+		console.trace();
 		throw 'Does not have device with id: '+id+' available ids: '+JSON.stringify(Object.keys(me._deviceHandlers));
 	}
 
