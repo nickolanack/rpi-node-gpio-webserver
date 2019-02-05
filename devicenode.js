@@ -267,16 +267,16 @@ DeviceNode.prototype.startWebSocketProxyClient=function(proxy){
 				
 
 				JSON.parse(response).forEach(function(device){
-					var pin=device.pin;
-					device.pin=prefix+device.pin;
-					console.log('Add device('+pin+') as: '+device.pin);
+					var id=device.id;
+					device.id=prefix+id;
+					console.log('Add device('+id+') as: '+device.id);
 					me._devices.push(device);
 					//console.log(JSON.stringify(me._devices));
 					me._deviceHandlers[device.id]={
 						write:function(value, callback){
 							try{
 								me._wsProxy.send('set_device_value', {
-									pin: pin,
+									id: id,
 									value: value
 								}, function(response) {
 									device.state = value;
