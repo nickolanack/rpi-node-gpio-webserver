@@ -47,7 +47,9 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 		me._deviceHandlers={};
 		me._devices.forEach(function(device, index) {//device REFERENCE
 
-			device.id=index;
+			if(typeof device=="undefined"){
+				device.id=index;
+			}
 
 
 			if(!device.pin){
@@ -194,14 +196,14 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 			clientDevices.push(device);
 			var handler={
 				write:function(value, callback){
-					console.log('Client Proxy: Set device: '+device.pin+' to '+value);
+					console.log('Client Proxy: Set device: '+device.id+' to '+value);
 
 					//braodcast;
 					device.state=value;
 					callback(value);
 				}
 			}
-			clientDevicesHandlers.push(device.pin);
+			clientDevicesHandlers.push(device.id);
 			me._deviceHandlers[device.id]=handler
 			me._wsServer.broadcast('notification.deviceupdate', JSON.stringify(device));
 		})
@@ -360,12 +362,32 @@ DeviceNode.prototype.clientCanSetPin = function(client, pin) {
 DeviceNode.prototype.clientCanSetPinWithId = function(client, id) {
 	var me=this;
 
-	return me._devices[id].direction==='out';
+	for(var i=0;i<me._devices.length;i++){
+		if(me._devices[i].id+""===idOrPin+""){
+			return me._devices[id].direction==='out';
+		}
+	}
 
-	//return me.clientCanSetPin(me._devices[id].pin);
-	//throw 'need to discover pin. id: '+id;
+	throw 'Not a valid device: '+id;
+
 };
+DeviceNode.prototype.deviceId=function(idOrPin){
+	var me=this;
+	for(var i=0;i<me._devices.length;i++){
+		if(me._devices[i].id+""===idOrPin+""){
+			return me._devices[i].id
+		}
+	}
 
+	for(var i=0;i<me._devices.length;i++){
+		if((typeof me._devices[i].pin!="undefined")&&me._devices[i].pin+""===idOrPin+""){
+			return me._devices[i].id
+		}
+	}
+
+	throw 'Not a valid device: '+idOrPin;
+
+};
 
 
 DeviceNode.prototype.isOutputPin = function(pin) {
