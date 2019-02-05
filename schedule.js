@@ -301,7 +301,7 @@ Scheduler.prototype.run = function(initiator, resolver) {
 
 		if((typeof event.interval)=='number'){
 
-			console.log('Starting numeric interval schedule: '+event.interval);
+			console.log('Parsing numeric interval schedule: '+event.interval);
 
 			setInterval(function(){
 				executeSequentialTasks(event.tasks.slice(0), initiator, resolver);
@@ -311,7 +311,7 @@ Scheduler.prototype.run = function(initiator, resolver) {
 
 		if((typeof event.interval)=='string'){
 
-			console.log('Starting text interval schedule: '+event.interval);
+			console.log('Parsing text interval schedule: '+event.interval);
 			var date=new Date();
 			console.log('Current Date: '+ date);
 

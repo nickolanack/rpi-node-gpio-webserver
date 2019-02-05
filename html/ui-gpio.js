@@ -20,9 +20,9 @@ var UIGeneralPurposeIOPanel = new Class({
 				});
 			};
 
-			var signalDeviceValue = function(pin, value) {
+			var signalDeviceValue = function(id, value) {
 				websocket.execute('set_device_value', {
-					pin: pin,
+					id: id,
 					value: value
 				}, function(response) {
 					console.log(response);
@@ -34,9 +34,9 @@ var UIGeneralPurposeIOPanel = new Class({
 				websocket.addEvent('notification.statechange', function(response) {
 
 					var data = JSON.parse(response);
-					Array.each(devices, function(device) {
+					devices.forEach(function(device) {
 
-						if (device.pin+"" === data.pin+"") {
+						if (device.id+"" === data.id+"") {
 
 							device._suppressEventSignal = true;
 							device.control.setValue(data.value);
@@ -47,16 +47,19 @@ var UIGeneralPurposeIOPanel = new Class({
 
 				});
 
-				Array.each(devices, function(device) {
+				devices.forEach(function(device) {
 
 					var state = device.state;
 					var container = element.appendChild(new Element('div'));
+
+
+
 					var control = new UISwitchControl(container, {
 						state: state
 					}).addEvent("change", function(newState) {
 						if (state != newState) {
 							if (!device._suppressEventSignal) {
-								signalDeviceValue(device.pin, newState);
+								signalDeviceValue(device.id, newState);
 							}
 
 							state = newState;
@@ -84,14 +87,14 @@ var UIGeneralPurposeIOPanel = new Class({
 
 				websocket.addEvent('disconnect', function() {
 					//disable switches while disconnected
-					Array.each(devices, function(device) {
+					devices.forEeach(function(device) {
 						device.control.disable();
 					});
 
 				});
 				websocket.addEvent('reconnect', function() {
 					//enable switches when reconnected
-					Array.each(devices, function(device) {
+					devices.forEeach(function(device) {
 						device.control.enable();
 					});
 
@@ -102,10 +105,10 @@ var UIGeneralPurposeIOPanel = new Class({
 					//update all devices with current state from request
 
 					getDevices(function(updatedDevices) {
-						Array.each(updatedDevices, function(updatedDevice) {
+						updatedDevices.forEeach(function(updatedDevice) {
 							var state = updatedDevice.state;
-							Array.each(devices, function(device) {
-								if (device.pin+"" === updatedDevice.pin+"") {
+							devices.forEeach( function(device) {
+								if (device.id+"" === updatedDevice.id+"") {
 									device._suppressEventSignal = true;
 									device.control.setValue(state);
 								}

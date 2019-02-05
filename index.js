@@ -24,6 +24,7 @@ if (config.websocketPort !== false) {
 
 
 	if (devices) {
+		console.log(JSON.stringify(devices, null, '   '))
 		node.initializeDevices(devices)
 	}
 
