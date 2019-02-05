@@ -448,20 +448,26 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback, filterClient
 	});
 
 
-	if (me._wsProxy && me._proxyMap[id]) {
+	if (me._wsProxy) {
 
-		console.log('Forward Client: Set device: ' + me._proxyMap[id] + ' to ' + value);
-		try {
-			me._wsProxy.send('set_device_value', {
-				id: me._proxyMap[id],
-				value: value
-			}, function(response) {
-				console.log('forwarded on');
-			});
-		} catch (e) {
-			console.log('Error Forwarding to proxy');
-			console.error(e);
+		console.log('Check Forward Proxy: '+me._proxyMap[id]+' '+Object.keys(me._proxyMap));
+
+		if( me._proxyMap[id]){
+			console.log('Forward Client: Set device: ' + me._proxyMap[id] + ' to ' + value);
+			try {
+				me._wsProxy.send('set_device_value', {
+					id: me._proxyMap[id],
+					value: value
+				}, function(response) {
+					console.log('forwarded on');
+				});
+			} catch (e) {
+				console.log('Error Forwarding to proxy');
+				console.error(e);
+			}
 		}
+
+		
 
 	}
 
