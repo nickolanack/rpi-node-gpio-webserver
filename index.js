@@ -63,10 +63,10 @@ if (config.websocketPort !== false) {
 
 			(new Scheduler(event)).run(
 				function(task, interval, callback) {
-					node.setDeviceStateAndBroadcast(node.deviceId(task.setDevice||task.setPin), task.to);
+					node.setDeviceValue(node.deviceId(task.setDevice||task.setPin), task.to);
 				}, 
 				function(task) {
-					node.setDeviceStateAndBroadcast(node.deviceId(task.setDevice||task.setPin), task.thenTo);
+					node.setDeviceValue(node.deviceId(task.setDevice||task.setPin), task.thenTo);
 				}
 			);
 
