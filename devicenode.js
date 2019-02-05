@@ -1,6 +1,44 @@
 var events = require('events');
 
-function DeviceNode() {};
+function DeviceNode() {
+
+
+	var me=this;
+
+	me.on('change', function(id, value){
+
+		me._wsServer.broadcast('notification.statechange', JSON.stringify({
+			id: id,
+			value: value
+		}));
+
+		if (me._wsProxy) {
+
+			console.log('Check Forward Proxy: '+me._proxyMap[id]+' '+Object.keys(me._proxyMap));
+
+			if( me._proxyMap[id]){
+				console.log('Forward Client: Set device: ' + me._proxyMap[id] + ' to ' + value);
+				try {
+					me._wsProxy.send('set_device_value', {
+						id: me._proxyMap[id],
+						value: value
+					}, function(response) {
+						console.log('forwarded on');
+					});
+				} catch (e) {
+					console.log('Error Forwarding to proxy');
+					console.error(e);
+				}
+			}
+
+		}
+
+
+	})
+	
+
+
+};
 DeviceNode.prototype.__proto__ = events.EventEmitter.prototype;
 DeviceNode.prototype.startWebServer = function(config, path) {
 
@@ -76,18 +114,6 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 
 						device.state = value;
 						callback(value);
-
-
-						if (device.type == "trigger") {
-							setTimeout(function() {
-								me.setDeviceValue(device.id, false);
-								// gpio.write(device.pin, false, function(err) {
-
-								// 	device.state = false;
-								// 	callback(false);
-								// });
-							}, 500);
-						}
 
 					});
 
@@ -393,6 +419,17 @@ DeviceNode.prototype.isWriteable = function(id, client) {
 	throw 'Not a valid device: ' + id;
 
 };
+DeviceNode.prototype.getDevice = function(id) {
+	var me = this;
+	for (var i = 0; i < me._devices.length; i++) {
+		if (me._devices[i].id + "" === id + "") {
+			return me._devices[i];
+		}
+	}
+
+	throw 'Not a valid device: ' + id;
+
+};
 DeviceNode.prototype.deviceId = function(idOrPin) {
 	var me = this;
 	for (var i = 0; i < me._devices.length; i++) {
@@ -418,9 +455,30 @@ DeviceNode.prototype.isOutputPin = function(pin) {
 };
 
 
-DeviceNode.prototype.setDeviceValue = function(id, value, callback, filterClient) {
+DeviceNode.prototype.setDeviceValue = function(id, value, callback) {
 
 	var me = this;
+
+
+	var device=me.getDevice(id);
+
+	if(device.type=="options"&&device.options.indexOf(value)===-1){
+		throw 'Must set options to one of: '+JSON.stringify(device.options);
+	}
+
+
+	if (device.type == "trigger"&&value===true) {
+
+		var innerCallback=callback;
+		callback=function(value){
+			callback(value);
+			setTimeout(function() {
+				me.setDeviceValue(device.id, false, innerCallback);
+			}, device.duration||500);
+		}
+
+		
+	}
 
 	me.getDeviceState(id, function(currentValue) {
 
@@ -431,46 +489,26 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback, filterClient
 			return;
 		}
 
-		me._setDeviceState(id, value, function(value) {
+		me._setDeviceState(id, value, function(newValue) {
+
+			if(value!==newValue){
+				throw 'Failed to set value device: ' + id + ' to ' + value;
+			}
+
 
 			if (callback) {
 				callback(value);
 			}
 
 			console.log('Set device: ' + id + ' to ' + value + ' broadcast' + (filterClient ? ' (but not to originator)' : ''));
-
-			me._wsServer.broadcast('notification.statechange', JSON.stringify({
-				id: id,
-				value: value
-			}), filterClient || null);
+			me.emit('change', id, value);
 
 		});
 
 	});
 
 
-	if (me._wsProxy) {
-
-		console.log('Check Forward Proxy: '+me._proxyMap[id]+' '+Object.keys(me._proxyMap));
-
-		if( me._proxyMap[id]){
-			console.log('Forward Client: Set device: ' + me._proxyMap[id] + ' to ' + value);
-			try {
-				me._wsProxy.send('set_device_value', {
-					id: me._proxyMap[id],
-					value: value
-				}, function(response) {
-					console.log('forwarded on');
-				});
-			} catch (e) {
-				console.log('Error Forwarding to proxy');
-				console.error(e);
-			}
-		}
-
-		
-
-	}
+	
 
 
 
