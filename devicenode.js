@@ -7,6 +7,9 @@ function DeviceNode() {
 
 	me.on('change', function(id, value){
 
+
+		console.log('Set device: ' + id + ' to ' + value + ' broadcast');
+
 		me._wsServer.broadcast('notification.statechange', JSON.stringify({
 			id: id,
 			value: value
@@ -500,7 +503,6 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback) {
 				callback(value);
 			}
 
-			console.log('Set device: ' + id + ' to ' + value + ' broadcast' + (filterClient ? ' (but not to originator)' : ''));
 			me.emit('change', id, value);
 
 		});
