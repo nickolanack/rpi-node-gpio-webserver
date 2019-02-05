@@ -39,6 +39,9 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 		var gpio;
 		try {
 			gpio = require('rpi-gpio');
+			gpio.on('change', function(channel, value){
+				console.log('on change: '+channel+" "+value?"true":"false");
+			});
 		} catch (e) {
 			console.log('using mock gpio')
 			gpio = require('./test/mock-gpio.js');
