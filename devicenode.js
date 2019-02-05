@@ -80,11 +80,12 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 
 						if (device.type == "trigger") {
 							setTimeout(function() {
-								gpio.write(device.pin, false, function(err) {
+								me.setDeviceValue(device.id, false);
+								// gpio.write(device.pin, false, function(err) {
 
-									device.state = false;
-									callback(false);
-								});
+								// 	device.state = false;
+								// 	callback(false);
+								// });
 							}, 500);
 						}
 
