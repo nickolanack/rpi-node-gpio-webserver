@@ -474,7 +474,10 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback) {
 
 		var innerCallback=callback;
 		callback=function(value){
-			innerCallback(value);
+
+			if (innerCallback) {
+				innerCallback(value);
+			}
 			setTimeout(function() {
 				me.setDeviceValue(device.id, false, innerCallback);
 			}, device.duration||500);
