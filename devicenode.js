@@ -47,7 +47,7 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 		me._deviceHandlers={};
 		me._devices.forEach(function(device, index) {//device REFERENCE
 
-			if(typeof device=="undefined"){
+			if(typeof device.id=="undefined"){
 				device.id=index;
 			}
 
@@ -183,7 +183,7 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 
 			var pin=device.pin;
 			if(typeof device.id=="undefined"){
-				throw 'Requires device id '+JSON.stringify(device);
+				device.id=index;
 			}
 
 
@@ -363,8 +363,8 @@ DeviceNode.prototype.clientCanSetPinWithId = function(client, id) {
 	var me=this;
 
 	for(var i=0;i<me._devices.length;i++){
-		if(me._devices[i].id+""===idOrPin+""){
-			return me._devices[id].direction==='out';
+		if(me._devices[i].id+""===id+""){
+			return me._devices[i].direction==='out';
 		}
 	}
 
