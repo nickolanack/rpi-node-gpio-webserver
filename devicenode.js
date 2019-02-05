@@ -69,7 +69,7 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 					}
 
 					if (device.type == "trigger" && value !== true) {
-						throw 'can only set trigger value to true'
+						//throw 'can only set trigger value to true'
 					}
 
 					gpio.write(device.pin, value, function(err) {
