@@ -421,7 +421,9 @@ DeviceNode.prototype.setDeviceStateAndBroadcast = function(id, value, callback, 
 	me.getDeviceState(id, function(currentValue){
 
 		if(currentValue===value){
-			callback(value)
+			if(callback){
+				callback(value);
+			}
 			return;
 		}
 
