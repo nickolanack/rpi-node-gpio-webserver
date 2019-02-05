@@ -73,6 +73,9 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 			}
 
 			me._deviceHandlers[device.id]={
+				read:function(callback){
+					callback(device.state);
+				},
 				write:function(value, callback){
 
 					if(!device.pin){
@@ -95,7 +98,6 @@ DeviceNode.prototype.initializeDevices = function(devices) {
 
 									device.state = false;
 									callback(false);
-									
 								});
 							}, 500);
 						}
@@ -149,12 +151,10 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 
 			me.setDeviceStateAndBroadcast(id, value, function(value){
 				callback('Set device: ' + id + ' to ' + value);
-			}
-			//, function(client) {
-				//filter client
-				//return options.client !== client;
-			//}
-			);
+			}, function(client) {
+				filter client
+				return options.client !== client;
+			});
 
 
 
@@ -195,6 +195,9 @@ DeviceNode.prototype._addWsTaskHandlers = function(config) {
 			me._devices.push(device);
 			clientDevices.push(device);
 			var handler={
+				read:function(callback){
+					callback(device.state);
+				},
 				write:function(value, callback){
 					console.log('Client Proxy: Set device: '+device.id+' to '+value);
 
@@ -273,6 +276,9 @@ DeviceNode.prototype.startWebSocketProxyClient=function(proxy){
 					me._devices.push(device);
 					//console.log(JSON.stringify(me._devices));
 					me._deviceHandlers[device.id]={
+						read:function(callback){
+							callback(device.state);
+						},
 						write:function(value, callback){
 							try{
 								me._wsProxy.send('set_device_value', {
@@ -354,6 +360,16 @@ DeviceNode.prototype.setDeviceState = function(id, value, callback) {
 
 	me._deviceHandlers[id].write(value, callback);
 }
+DeviceNode.prototype.getDeviceState = function(id, callback) {
+	var me=this;
+
+	if(!me._deviceHandlers[id]){
+		console.trace();
+		throw 'Does not have device with id: '+id+' available ids: '+JSON.stringify(Object.keys(me._deviceHandlers));
+	}
+
+	me._deviceHandlers[id].read(callback);
+}
 DeviceNode.prototype.clientCanSetPin = function(client, pin) {
 	var me=this;
 	return me.isOutputPin(pin);
@@ -400,18 +416,27 @@ DeviceNode.prototype.setDeviceStateAndBroadcast = function(id, value, callback, 
 
 	var me=this;
 
-	me.setDeviceState(id, value, function(value) {
+	me.getDeviceState(id, function(currentValue){
 
-		if(callback){
-			callback(value);
+		if(currentValue===value){
+			calback(value)
+			return;
 		}
 
-		console.log('Set device: ' + id + ' to ' + value+' broadcast'+(filterClient?' (but not to originator)':''));
+		me.setDeviceState(id, value, function(value) {
 
-		me._wsServer.broadcast('notification.statechange', JSON.stringify({
-			id: id,
-			value: value
-		}), filterClient||null);
+			if(callback){
+				callback(value);
+			}
+
+			console.log('Set device: ' + id + ' to ' + value+' broadcast'+(filterClient?' (but not to originator)':''));
+
+			me._wsServer.broadcast('notification.statechange', JSON.stringify({
+				id: id,
+				value: value
+			}), filterClient||null);
+
+		});
 
 	});
 
@@ -432,6 +457,8 @@ DeviceNode.prototype.setDeviceStateAndBroadcast = function(id, value, callback, 
 		}
 
 	}
+
+
 
 };
 
