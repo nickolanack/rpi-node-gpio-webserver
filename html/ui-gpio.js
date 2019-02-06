@@ -38,9 +38,10 @@ var UIGeneralPurposeIOPanel = new Class({
 
 						if (device.id+"" === data.id+"") {
 
-							device.state=data.value;
-							device.control.setValue(data.value);
-
+							if (device.state != data.value) {
+								device.state=data.value;
+								device.control.setValue(data.value);
+							}
 						}
 
 					});
