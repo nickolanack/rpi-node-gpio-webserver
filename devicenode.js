@@ -155,6 +155,7 @@ DeviceNode.prototype.addDevice = function(device, read, write) {
 		read: read,
 		write: write
 	}
+	me.emit('add', device.id);
 }
 
 
@@ -488,9 +489,17 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback) {
 
 	me.getDeviceState(id, function(currentValue) {
 
+
+
 		if (currentValue === value) {
 			if (callback) {
 				callback(value);
+			}
+
+			if(currentValue!==device.state){
+				device.state=currentValue;
+				me.emit('change', id, value);
+				me.emit('change.'+id, value);
 			}
 			return;
 		}
@@ -507,6 +516,7 @@ DeviceNode.prototype.setDeviceValue = function(id, value, callback) {
 			}
 
 			me.emit('change', id, value);
+			me.emit('change.'+id, value);
 
 		});
 
