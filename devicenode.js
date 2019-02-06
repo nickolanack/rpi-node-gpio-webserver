@@ -7,6 +7,7 @@ function DeviceNode() {
 
 	me.on('change', function(id, value){
 
+		
 
 		console.log('Set device: ' + id + ' to ' + value + ' broadcast');
 

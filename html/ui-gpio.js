@@ -38,7 +38,7 @@ var UIGeneralPurposeIOPanel = new Class({
 
 						if (device.id+"" === data.id+"") {
 
-							device._suppressEventSignal = true;
+							device.state=data.value;
 							device.control.setValue(data.value);
 
 						}
@@ -49,28 +49,16 @@ var UIGeneralPurposeIOPanel = new Class({
 
 				devices.forEach(function(device) {
 
-					var state = device.state;
 					var container = element.appendChild(new Element('div'));
-
-
-
 					var control = new UISwitchControl(container, {
-						state: state
+						state: device.state
 					}).addEvent("change", function(newState) {
-						if (state != newState) {
-							if (!device._suppressEventSignal) {
-								signalDeviceValue(device.id, newState);
-							}
-
-							state = newState;
+						if (device.state != newState) {
+							signalDeviceValue(device.id, newState);
+							device.state = newState;
 						}
 
-						if (device._suppressEventSignal) {
-							// state was set on a notification from server. 
-							// it is not necessary to re-signal the state back 
-							// to the server and could cause an infinite loop 
-							delete device._suppressEventSignal;
-						}
+
 					});
 					container.appendChild(new Element('label', {
 						html: device.name
@@ -109,8 +97,8 @@ var UIGeneralPurposeIOPanel = new Class({
 							var state = updatedDevice.state;
 							devices.forEeach( function(device) {
 								if (device.id+"" === updatedDevice.id+"") {
-									device._suppressEventSignal = true;
-									device.control.setValue(state);
+									device.state=updatedDevice.state
+									device.control.setValue(updatedDevice.state);
 								}
 
 							});
