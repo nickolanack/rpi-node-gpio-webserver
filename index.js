@@ -25,7 +25,67 @@ if (config.websocketPort !== false) {
 
 	if (devices) {
 		console.log(JSON.stringify(devices, null, '   '))
-		node.initializeDevices(devices)
+		
+		var gpio;
+		try {
+			gpio = require('rpi-gpio');
+			gpio.on('change', function(channel, value) {
+				console.log('on change: ' + channel + " " + value ? "true" : "false");
+			});
+		} catch (e) {
+			console.log('using mock gpio')
+			gpio = require('./test/mock-gpio.js');
+
+		}
+
+		devices.forEach(function(device) { //device REFERENCE
+
+
+			if (!device.pin) {
+				throw 'Expected gpio pin: ' + JSON.stringify(device);
+			}
+
+			var direction = device.direction === 'in' ? gpio.DIR_IN : gpio.DIR_OUT;
+
+			gpio.setup(device.pin, direction, function(err) {
+
+				gpio.read(device.pin, function(err, value) {
+					console.log('device: ' + device.pin + ' initial state: ' + value);
+					device.state = value ? true : false;
+
+
+					node.addDevice(device, {
+						read:function(callback) {
+							callback(device.state);
+						}, 
+						write:function(value, callback) {
+
+							if (!device.pin) {
+								throw 'expected pin: ' + JSON.stringify(device);
+							}
+
+							if (device.type == "trigger" && value !== true) {
+								//throw 'can only set trigger value to true'
+							}
+
+							gpio.write(device.pin, value, function(err) {
+
+								device.state = value;
+								callback(value);
+
+							});
+
+
+						}
+					});
+
+				});
+
+			});
+
+
+
+		});
 	}
 
 
@@ -56,24 +116,38 @@ if (config.websocketPort !== false) {
 
 	var schedules = require("./schedule.json");
 	var Scheduler = require("./schedule.js");
-	setTimeout(function(){
+	setTimeout(function() {
 		//delay schedule to prevent running right away 
 		//and alows devices to init
 		schedules.forEach(function(event) {
 
+
+
+
 			(new Scheduler(event)).run(
 				function(task, interval, callback) {
-					node.setDeviceValue(node.deviceId(task.setDevice||task.setPin), task.to);
-				}, 
+					node.setDeviceValue(node.deviceId(task.setDevice || task.setPin), task.to);
+				},
 				function(task) {
-					node.setDeviceValue(node.deviceId(task.setDevice||task.setPin), task.thenTo);
+					node.setDeviceValue(node.deviceId(task.setDevice || task.setPin), task.thenTo);
 				}
 			);
+
+			var device=node.getDevice(node.deviceId(event.tasks[0].setDevice || event.tasks[0].setPin));
+			node.addDevice({
+				"name":"Schedule: "+device.name+' '+event.interval,
+				"direction":"out",
+				"type":"bool",
+				"state":true
+			}, {
+				read:function(){
+					return "interval";
+				}
+			});
 
 		});
 
 	}, 10000)
-	
 
 
 

@@ -7,7 +7,7 @@ function DeviceNode() {
 
 	me.on('change', function(id, value){
 
-		
+
 
 		console.log('Set device: ' + id + ' to ' + value + ' broadcast');
 
@@ -73,70 +73,11 @@ DeviceNode.prototype.startWebServer = function(config, path) {
 
 DeviceNode.prototype.initializeDevices = function(devices) {
 
-	var me = this;
-	var gpio;
-	try {
-		gpio = require('rpi-gpio');
-		gpio.on('change', function(channel, value) {
-			console.log('on change: ' + channel + " " + value ? "true" : "false");
-		});
-	} catch (e) {
-		console.log('using mock gpio')
-		gpio = require('./test/mock-gpio.js');
-
-	}
 	
-	devices.forEach(function(device) { //device REFERENCE
-
-
-		if (!device.pin) {
-			throw 'Expected gpio pin: ' + JSON.stringify(device);
-		}
-
-		var direction = device.direction === 'in' ? gpio.DIR_IN : gpio.DIR_OUT;
-
-		gpio.setup(device.pin, direction, function(err) {
-
-			gpio.read(device.pin, function(err, value) {
-				console.log('device: ' + device.pin + ' initial state: ' + value);
-				device.state = value ? true : false;
-
-
-				me.addDevice(device, function(callback) {
-					callback(device.state);
-				}, function(value, callback) {
-
-					if (!device.pin) {
-						throw 'expected pin: ' + JSON.stringify(device);
-					}
-
-					if (device.type == "trigger" && value !== true) {
-						//throw 'can only set trigger value to true'
-					}
-
-					gpio.write(device.pin, value, function(err) {
-
-						device.state = value;
-						callback(value);
-
-					});
-
-
-				});
-
-			});
-
-		});
-
-		
-
-	});
-
-
 
 }
 
-DeviceNode.prototype.addDevice = function(device, read, write) {
+DeviceNode.prototype.addDevice = function(device, options) {
 
 	var me=this;
 	if(!me._devices){
@@ -152,10 +93,7 @@ DeviceNode.prototype.addDevice = function(device, read, write) {
 	if(!me._deviceHandlers){
 		me._deviceHandlers = {};
 	}
-	me._deviceHandlers[device.id] = {
-		read: read,
-		write: write
-	}
+	me._deviceHandlers[device.id] = options;
 	me.emit('add', device.id);
 }
 
@@ -432,7 +370,7 @@ DeviceNode.prototype.getDevice = function(id) {
 		}
 	}
 
-	throw 'Not a valid device: ' + id;
+	throw 'Not a valid device: ' + id+' ['+me._devices.map(function(d){return d.id;}).join(', ')+']';
 
 };
 DeviceNode.prototype.deviceId = function(idOrPin) {
@@ -449,7 +387,7 @@ DeviceNode.prototype.deviceId = function(idOrPin) {
 		}
 	}
 
-	throw 'Not a valid device: ' + idOrPin;
+	throw 'Not a valid device: ' + idOrPin+' ['+me._devices.map(function(d){return d.id;}).join(', ')+']'+' ['+me._devices.map(function(d){return d.pin;}).join(', ')+']';
 
 };
 
